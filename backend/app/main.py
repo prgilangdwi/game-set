@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.v1.routes.tournaments import router as tournaments_router
 from app.api.v1.routes.public import router as public_router
+from app.api.v1.routes.profiles import router as profiles_router
 
 app = FastAPI(
     title="GameSet API",
@@ -21,6 +22,7 @@ app.add_middleware(
 
 app.include_router(tournaments_router, prefix="/api/v1")
 app.include_router(public_router, prefix="/api/v1")
+app.include_router(profiles_router, prefix="/api/v1")
 
 
 @app.get("/health")

@@ -1,3 +1,31 @@
+export type PreferredHand = "right" | "left" | "ambidextrous";
+export type FavoriteSurface = "hard" | "clay" | "grass" | "indoor";
+
+export interface UserProfile {
+  id: string;
+  name: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  skill_level: SkillLevel | null;
+  years_playing: number | null;
+  location: string | null;
+  preferred_hand: PreferredHand | null;
+  favorite_surface: FavoriteSurface | null;
+  role: string | null;
+  created_at: string | null;
+}
+
+export interface ProfileUpdatePayload {
+  name?: string;
+  bio?: string;
+  skill_level?: SkillLevel;
+  years_playing?: number;
+  location?: string;
+  preferred_hand?: PreferredHand;
+  favorite_surface?: FavoriteSurface;
+  avatar_url?: string;
+}
+
 export type TournamentFormat =
   | "americano"
   | "mexicano"
