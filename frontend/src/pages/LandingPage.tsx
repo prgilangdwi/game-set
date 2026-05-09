@@ -10,6 +10,10 @@ const features = [
   { icon: Zap, title: "Score in Seconds", description: "Enter match results from any device, changes propagate instantly." },
 ];
 
+// Explicit hover color for tennis-ball-green buttons — avoids the default
+// variant's hover:bg-primary/90 turning the button forest-green (same as text)
+const btnYellow = "bg-tennis-ball-green text-forest-green font-bold hover:bg-[#b8cc30]";
+
 export function LandingPage() {
   const navigate = useNavigate();
 
@@ -22,15 +26,16 @@ export function LandingPage() {
           <span className="text-xl font-bold text-white tracking-tight">GameSet</span>
         </div>
         <div className="flex items-center gap-2">
+          {/* Ghost: no background conflict, text stays white through all states */}
           <Button
             variant="ghost"
-            className="text-white/90 hover:text-white hover:bg-white/10"
+            className="text-white hover:text-white hover:bg-white/15"
             onClick={() => navigate("/auth")}
           >
             Sign In
           </Button>
           <Button
-            className="bg-tennis-ball-green text-forest-green font-bold hover:opacity-90"
+            className={`${btnYellow} px-5`}
             onClick={() => navigate("/auth")}
           >
             Get Started
@@ -64,15 +69,16 @@ export function LandingPage() {
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Button
               size="lg"
-              className="bg-tennis-ball-green text-forest-green hover:opacity-90 font-bold px-8 text-base"
+              className={`${btnYellow} px-8 text-base`}
               onClick={() => navigate("/auth")}
             >
               Create a Tournament
             </Button>
+            {/* bg-transparent overrides outline variant's bg-white so text stays visible */}
             <Button
               size="lg"
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 font-medium px-8 text-base"
+              className="bg-transparent border-white/40 text-white hover:bg-white/15 hover:text-white font-medium px-8 text-base"
               onClick={() => navigate("/auth")}
             >
               Sign In
@@ -132,7 +138,7 @@ export function LandingPage() {
           </p>
           <Button
             size="lg"
-            className="bg-tennis-ball-green text-forest-green hover:opacity-90 font-bold px-10 text-base"
+            className={`${btnYellow} px-10 text-base`}
             onClick={() => navigate("/auth")}
           >
             Start Now <ChevronRight className="w-5 h-5 ml-1" />
