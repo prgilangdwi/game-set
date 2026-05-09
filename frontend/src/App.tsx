@@ -12,6 +12,8 @@ import { PlayersPage } from "@/pages/PlayersPage";
 import { LeaderboardPage } from "@/pages/LeaderboardPage";
 import { LiveScoreboardPage } from "@/pages/LiveScoreboardPage";
 import { SettingsPage } from "@/pages/SettingsPage";
+import { ProfilePage } from "@/pages/ProfilePage";
+import { CommunityPage } from "@/pages/CommunityPage";
 import { PublicTournamentPage } from "@/pages/PublicTournamentPage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -49,6 +51,8 @@ export default function App() {
         <Route path="/tournaments/:id/scoreboard" element={<LiveScoreboardPage />} />
         <Route path="/players" element={<PlayersPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/community" element={<CommunityPage />} />
+        <Route path="/profile/:userId" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
 
