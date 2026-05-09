@@ -68,6 +68,7 @@ export function CreateTournamentPage() {
 
   const createMutation = useMutation({
     mutationFn: async () => {
+      setError("");
       const payload: CreateTournamentPayload = {
         name, description, format, location,
         start_date: startDate || undefined,
@@ -81,7 +82,15 @@ export function CreateTournamentPage() {
       const tournament = await tournamentsApi.create(payload);
       const validPlayers = players.filter((p) => p.first_name.trim() && p.last_name.trim());
       if (validPlayers.length > 0) {
-        await playersApi.add(tournament.id, { players: validPlayers });
+        try {
+          await playersApi.add(tournament.id, { players: validPlayers });
+        } catch {
+          // Tournament created — navigate there so players can be added manually
+          qc.invalidateQueries({ queryKey: ["tournaments"] });
+          toast.warning(`Tournament created but players couldn't be added. You can add them from the tournament page.`);
+          navigate(`/tournaments/${tournament.id}`);
+          return tournament;
+        }
       }
       return tournament;
     },
@@ -100,7 +109,7 @@ export function CreateTournamentPage() {
   }
 
   function nextStep() { if (validateStep()) setStep((s) => Math.min(4, s + 1)); }
-  function prevStep() { setStep((s) => Math.max(1, s - 1)); }
+  function prevStep() { setError(""); setStep((s) => Math.max(1, s - 1)); }
 
   function addPlayer() { setPlayers((p) => [...p, emptyPlayer()]); }
   function removePlayer(i: number) { setPlayers((p) => p.filter((_, idx) => idx !== i)); }
