@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import {
   Home, Trophy, Calendar, BarChart3, Users, Settings,
-  Menu, X, LogOut, ChevronRight,
+  Menu, X, LogOut, ChevronRight, UsersRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,6 +13,7 @@ const navItems = [
   { to: "/tournaments", label: "Tournaments", icon: Trophy },
   { to: "/leaderboard", label: "Leaderboard", icon: BarChart3 },
   { to: "/players", label: "Players", icon: Users },
+  { to: "/community", label: "Community", icon: UsersRound },
 ];
 
 function NavItem({ to, label, icon: Icon, onClick }: {
@@ -75,12 +76,14 @@ export function Navigation() {
       </div>
 
       {user && (
-        <div className="mt-3 px-3 py-2 rounded-lg bg-warm-gray border border-border/50">
-          <p className="text-xs font-medium text-foreground truncate">
-            {user.user_metadata?.name || user.email}
-          </p>
-          <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-        </div>
+        <Link to={`/profile/${user.id}`} className="block mt-3">
+          <div className="px-3 py-2 rounded-lg bg-warm-gray border border-border/50 hover:border-forest-green/30 transition-colors">
+            <p className="text-xs font-medium text-foreground truncate">
+              {user.user_metadata?.name || user.email}
+            </p>
+            <p className="text-xs text-muted-foreground truncate">View profile</p>
+          </div>
+        </Link>
       )}
     </div>
   );

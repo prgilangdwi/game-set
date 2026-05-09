@@ -8,6 +8,8 @@ import type {
   CreateTournamentPayload,
   AddPlayersPayload,
   UpdateScorePayload,
+  UserProfile,
+  ProfileUpdatePayload,
 } from "@/types";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
@@ -105,6 +107,15 @@ async function publicRequest<T>(path: string): Promise<T> {
   }
   return res.json();
 }
+
+// Profiles
+export const profilesApi = {
+  getMe: () => request<UserProfile>("/profiles/me"),
+  updateMe: (data: ProfileUpdatePayload) =>
+    request<UserProfile>("/profiles/me", { method: "PATCH", body: JSON.stringify(data) }),
+  get: (userId: string) => request<UserProfile>(`/profiles/${userId}`),
+  list: () => request<UserProfile[]>("/profiles"),
+};
 
 export const publicApi = {
   getTournament: (slugOrId: string) =>
