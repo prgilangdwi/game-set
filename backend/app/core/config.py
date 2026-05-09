@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     SUPABASE_SERVICE_KEY: str = ""
     JWT_SECRET: str = ""
     JWT_ALGORITHM: str = "HS256"
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000"]
+    ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
     DEBUG: bool = False
 
 
