@@ -1,15 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Trophy, Users, Calendar, BarChart3, Zap, Shield } from "lucide-react";
+import { Trophy, Users, Calendar, BarChart3, Zap, ChevronRight } from "lucide-react";
 
 const features = [
-  { icon: Trophy, title: "Americano Tournaments", description: "Automated scheduling and pairing for perfect Americano events" },
-  { icon: Users, title: "Mixed Doubles", description: "Smart team formation and rotation for balanced competition" },
-  { icon: Calendar, title: "Round Robin", description: "Complete round-robin scheduling with real-time updates" },
-  { icon: BarChart3, title: "Live Analytics", description: "Track performance, rankings, and statistics in real-time" },
-  { icon: Zap, title: "Instant Updates", description: "Live scoreboards and standings across all devices" },
-  { icon: Shield, title: "Tournament Management", description: "Complete control over your tennis events and leagues" },
+  { icon: Trophy, title: "Americano Format", description: "Auto-schedule rotating partners every round for a true Americano experience." },
+  { icon: Users, title: "Mixed Doubles", description: "Smart team mixing so everyone plays with and against different people." },
+  { icon: Calendar, title: "Round Robin", description: "Full draws generated instantly — just add players and go." },
+  { icon: BarChart3, title: "Live Standings", description: "Leaderboards update the moment a score is entered." },
+  { icon: Zap, title: "Score in Seconds", description: "Enter match results from any device, changes propagate instantly." },
 ];
 
 export function LandingPage() {
@@ -17,105 +15,134 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b border-border bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Trophy className="w-6 h-6 text-forest-green" />
-            <span className="text-xl font-semibold text-foreground">GameSet</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" onClick={() => navigate("/auth")} className="text-sm font-medium">Sign In</Button>
-            <Button
-              className="bg-forest-green text-white hover:bg-forest-green-light text-sm font-medium"
-              onClick={() => navigate("/auth")}
-            >
-              Get Started
-            </Button>
-          </div>
+      {/* Floating nav over hero */}
+      <header className="absolute top-0 left-0 right-0 z-20 px-6 py-5 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Trophy className="w-5 h-5 text-tennis-ball-green" />
+          <span className="text-xl font-bold text-white tracking-tight">GameSet</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            className="text-white/90 hover:text-white hover:bg-white/10"
+            onClick={() => navigate("/auth")}
+          >
+            Sign In
+          </Button>
+          <Button
+            className="bg-tennis-ball-green text-forest-green font-bold hover:opacity-90"
+            onClick={() => navigate("/auth")}
+          >
+            Get Started
+          </Button>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="container mx-auto px-4 py-16 lg:py-24">
-        <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-5xl lg:text-6xl font-semibold mb-6 leading-tight text-foreground">
-            Tournament management<br />made simple
+      {/* Hero — full screen with tennis court photo */}
+      <section className="relative h-screen min-h-[600px] flex items-center justify-center">
+        <div className="absolute inset-0 overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1920&q=80"
+            alt="Tennis court aerial view"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-forest-green/75 via-forest-green/60 to-black/80" />
+        </div>
+
+        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm mb-8">
+            <span className="w-2 h-2 rounded-full bg-tennis-ball-green" />
+            Tennis Tournament Platform
+          </div>
+          <h1 className="text-5xl lg:text-7xl font-bold text-white mb-5 leading-tight tracking-tight">
+            Game, Set,{" "}
+            <span className="text-tennis-ball-green">Match.</span>
           </h1>
-          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-            The modern platform for organizing Americano tournaments, mixed doubles, and round-robin events.
-            Built for clubs, organizers, and players.
+          <p className="text-xl text-white/75 mb-10 leading-relaxed">
+            Organize Americano and round-robin tournaments, track live scores, and manage your tennis events — all in one place.
           </p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
+          <div className="flex items-center justify-center gap-3 flex-wrap">
             <Button
               size="lg"
-              className="bg-forest-green text-white hover:bg-forest-green-light font-medium px-8"
+              className="bg-tennis-ball-green text-forest-green hover:opacity-90 font-bold px-8 text-base"
               onClick={() => navigate("/auth")}
             >
-              Start Free Trial
+              Create a Tournament
             </Button>
-            <Button size="lg" variant="outline" className="font-medium px-8 border-border">
-              Watch Demo
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white/30 text-white hover:bg-white/10 font-medium px-8 text-base"
+              onClick={() => navigate("/auth")}
+            >
+              Sign In
             </Button>
           </div>
         </div>
 
-        {/* Hero visual */}
-        <div className="mt-16">
-          <div className="rounded-xl border border-border bg-warm-gray p-8 lg:p-12 shadow-lg">
-            <div className="aspect-video bg-white rounded-lg border border-border flex items-center justify-center">
-              <div className="text-center">
-                <Trophy className="w-24 h-24 text-forest-green/20 mx-auto mb-4" />
-                <p className="text-muted-foreground text-sm">Live tournament dashboard</p>
-              </div>
-            </div>
+        {/* Scroll hint */}
+        <div className="absolute bottom-8 left-0 right-0 flex justify-center">
+          <div className="w-5 h-8 rounded-full border-2 border-white/30 flex justify-center pt-1.5">
+            <div className="w-1 h-2 bg-white/50 rounded-full animate-bounce" />
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section className="container mx-auto px-4 py-16 bg-warm-gray/30">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-semibold mb-3 text-foreground">Everything You Need</h2>
-          <p className="text-lg text-muted-foreground">Complete tournament management in one platform</p>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {features.map((feature) => {
-            const Icon = feature.icon;
-            return (
-              <Card key={feature.title} className="border border-border bg-white p-6 hover:shadow-md transition-shadow">
-                <div className="p-2.5 rounded-lg bg-soft-lime/20 w-fit mb-4">
-                  <Icon className="w-5 h-5 text-forest-green" />
+      <section className="py-20 bg-warm-gray/40">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-3">Built for Tennis</h2>
+            <p className="text-muted-foreground text-lg">Everything you need to run a great tournament</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
+            {features.map((f) => {
+              const Icon = f.icon;
+              return (
+                <div
+                  key={f.title}
+                  className="bg-white rounded-xl border border-border p-6 hover:shadow-md transition-shadow group"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-forest-green/10 flex items-center justify-center mb-4 group-hover:bg-tennis-ball-green/20 transition-colors">
+                    <Icon className="w-5 h-5 text-forest-green" />
+                  </div>
+                  <h3 className="font-semibold text-foreground mb-2">{f.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{f.description}</p>
                 </div>
-                <h3 className="text-base font-semibold mb-2 text-foreground">{feature.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
-              </Card>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="container mx-auto px-4 py-16">
-        <Card className="border border-border bg-warm-gray p-12 lg:p-16 text-center">
-          <h2 className="text-3xl lg:text-4xl font-semibold mb-4 text-foreground">Ready to Get Started?</h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join hundreds of tennis clubs and organizers using GameSet to manage their tournaments
+      {/* Action photo + CTA */}
+      <section className="relative py-28 overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=1920&q=80"
+            alt="Tennis match in action"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-forest-green/85" />
+        </div>
+        <div className="relative z-10 container mx-auto px-6 text-center">
+          <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4">Ready to play?</h2>
+          <p className="text-white/75 text-lg mb-8 max-w-md mx-auto">
+            Set up your first tournament in under a minute — no credit card, no hassle.
           </p>
           <Button
             size="lg"
-            className="bg-forest-green text-white hover:bg-forest-green-light font-medium px-8"
+            className="bg-tennis-ball-green text-forest-green hover:opacity-90 font-bold px-10 text-base"
             onClick={() => navigate("/auth")}
           >
-            Start Your Free Trial
+            Start Now <ChevronRight className="w-5 h-5 ml-1" />
           </Button>
-        </Card>
+        </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border bg-white py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2026 GameSet. All rights reserved.</p>
+      <footer className="bg-white border-t border-border py-8">
+        <div className="container mx-auto px-6 text-center text-sm text-muted-foreground">
+          © 2026 GameSet · Tennis Tournament Platform
         </div>
       </footer>
     </div>
