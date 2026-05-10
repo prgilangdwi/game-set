@@ -221,7 +221,7 @@ export function SettingsPage() {
           {[
             { label: "Match start reminders", desc: "Get notified when your match is about to start" },
             { label: "Score updates", desc: "Receive live score notifications" },
-            { label: "Tournament announcements", desc: "News about your registered tournaments" },
+            { label: "Match Up announcements", desc: "News about your registered match ups" },
           ].map((item) => (
             <div key={item.label} className="flex items-center justify-between py-2">
               <div>

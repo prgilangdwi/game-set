@@ -58,15 +58,15 @@ export function DashboardPage() {
           onClick={() => navigate("/tournaments/new")}
         >
           <Plus className="w-4 h-4" />
-          Create Tournament
+          Create Match Up
         </Button>
       </div>
 
       {/* Stats */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Active Tournaments" value={activeTournaments.length} icon={Trophy} trend={activeTournaments.length > 0 ? { value: `${activeTournaments.length} running`, positive: true } : undefined} />
+        <StatCard title="Active Match Ups" value={activeTournaments.length} icon={Trophy} trend={activeTournaments.length > 0 ? { value: `${activeTournaments.length} running`, positive: true } : undefined} />
         <StatCard title="Total Players" value={totalPlayers} icon={Users} />
-        <StatCard title="Matches Today" value={totalMatches} icon={Calendar} subtitle={totalMatches > 0 ? `${completedMatches} completed, ${totalMatches - completedMatches} remaining` : "No active tournament"} />
+        <StatCard title="Matches Today" value={totalMatches} icon={Calendar} subtitle={totalMatches > 0 ? `${completedMatches} completed, ${totalMatches - completedMatches} remaining` : "No active match up"} />
         <StatCard title="Live Courts" value={liveCourts.length} icon={TrendingUp} trend={liveCourts.length > 0 ? { value: "matches in progress", positive: true } : undefined} />
       </div>
 
@@ -133,16 +133,16 @@ export function DashboardPage() {
       {/* Recent tournaments */}
       <div>
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-2xl font-semibold text-foreground">Your Tournaments</h2>
+          <h2 className="text-2xl font-semibold text-foreground">Your Match Ups</h2>
           <Button variant="ghost" size="sm" onClick={() => navigate("/tournaments")}>View All</Button>
         </div>
         {tournaments.length === 0 ? (
           <Card className="border border-border bg-white p-12 text-center">
             <Trophy className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-foreground mb-2">No tournaments yet</h3>
-            <p className="text-muted-foreground text-sm mb-6">Create your first tournament to get started</p>
+            <h3 className="text-lg font-semibold text-foreground mb-2">No match ups yet</h3>
+            <p className="text-muted-foreground text-sm mb-6">Create your first match up to get started</p>
             <Button className="bg-forest-green text-white hover:bg-forest-green-light" onClick={() => navigate("/tournaments/new")}>
-              Create Tournament
+              Create Match Up
             </Button>
           </Card>
         ) : (

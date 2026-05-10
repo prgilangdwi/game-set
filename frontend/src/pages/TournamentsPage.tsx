@@ -37,9 +37,9 @@ export function TournamentsPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-semibold text-foreground">Tournaments</h1>
+          <h1 className="text-3xl font-semibold text-foreground">Match Ups</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            {tournaments.length} tournament{tournaments.length !== 1 ? "s" : ""} total
+            {tournaments.length} match up{tournaments.length !== 1 ? "s" : ""} total
           </p>
         </div>
         <Button
@@ -47,7 +47,7 @@ export function TournamentsPage() {
           onClick={() => navigate("/tournaments/new")}
         >
           <Plus className="w-4 h-4" />
-          New Tournament
+          New Match Up
         </Button>
       </div>
 
@@ -56,7 +56,7 @@ export function TournamentsPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Search tournaments..."
+            placeholder="Search match ups..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
@@ -90,14 +90,14 @@ export function TournamentsPage() {
         <div className="flex flex-col items-center justify-center py-24">
           <Trophy className="w-16 h-16 text-muted-foreground/20 mb-4" />
           <h3 className="text-lg font-semibold text-foreground mb-2">
-            {search || statusFilter !== "all" ? "No tournaments found" : "No tournaments yet"}
+            {search || statusFilter !== "all" ? "No match ups found" : "No match ups yet"}
           </h3>
           <p className="text-muted-foreground text-sm mb-6">
-            {search || statusFilter !== "all" ? "Try adjusting your filters" : "Create your first tournament to get started"}
+            {search || statusFilter !== "all" ? "Try adjusting your filters" : "Create your first match up to get started"}
           </p>
           {!search && statusFilter === "all" && (
             <Button className="bg-forest-green text-white hover:bg-forest-green-light" onClick={() => navigate("/tournaments/new")}>
-              Create Tournament
+              Create Match Up
             </Button>
           )}
         </div>

@@ -14,8 +14,8 @@ import { toast } from "sonner";
 import type { TournamentFormat, PlayerGender, SkillLevel, CreateTournamentPayload } from "@/types";
 
 const steps = [
-  { number: 1, title: "Basic Info", description: "Tournament details" },
-  { number: 2, title: "Format", description: "Choose tournament type" },
+  { number: 1, title: "Basic Info", description: "Match Up details" },
+  { number: 2, title: "Format", description: "Choose match up type" },
   { number: 3, title: "Players", description: "Add participants" },
   { number: 4, title: "Schedule", description: "Courts & timing" },
 ];
@@ -25,7 +25,7 @@ const formats: { id: TournamentFormat; name: string; desc: string }[] = [
   { id: "mexicano", name: "Mexicano", desc: "Like Americano with skill matching" },
   { id: "round_robin", name: "Round Robin", desc: "Everyone plays everyone" },
   { id: "mixed_doubles", name: "Mixed Doubles", desc: "Fixed mixed pairs" },
-  { id: "single_elimination", name: "Single Elimination", desc: "Bracket tournament" },
+  { id: "single_elimination", name: "Single Elimination", desc: "Bracket-style match up" },
   { id: "team_cup", name: "Team Cup", desc: "Team-based competition" },
 ];
 
@@ -87,7 +87,7 @@ export function CreateTournamentPage() {
         } catch {
           // Tournament created — navigate there so players can be added manually
           qc.invalidateQueries({ queryKey: ["tournaments"] });
-          toast.warning(`Tournament created but players couldn't be added. You can add them from the tournament page.`);
+          toast.warning(`Match Up created but players couldn't be added. You can add them from the match up page.`);
           navigate(`/tournaments/${tournament.id}`);
           return tournament;
         }
@@ -96,7 +96,7 @@ export function CreateTournamentPage() {
     },
     onSuccess: (t) => {
       qc.invalidateQueries({ queryKey: ["tournaments"] });
-      toast.success(`Tournament "${t.name}" created!`);
+      toast.success(`Match Up "${t.name}" created!`);
       navigate(`/tournaments/${t.id}`);
     },
     onError: (err: Error) => setError(err.message),
@@ -104,7 +104,7 @@ export function CreateTournamentPage() {
 
   function validateStep(): boolean {
     setError("");
-    if (step === 1 && !name.trim()) { setError("Tournament name is required"); return false; }
+    if (step === 1 && !name.trim()) { setError("Match Up name is required"); return false; }
     return true;
   }
 
@@ -134,10 +134,10 @@ export function CreateTournamentPage() {
       <div className="mb-8">
         <Button variant="ghost" onClick={() => navigate("/tournaments")} className="mb-4 -ml-2">
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Tournaments
+          Back to Match Ups
         </Button>
-        <h1 className="text-3xl font-semibold mb-2 text-foreground">Create New Tournament</h1>
-        <p className="text-muted-foreground text-sm">Set up your tournament in a few simple steps</p>
+        <h1 className="text-3xl font-semibold mb-2 text-foreground">Create New Match Up</h1>
+        <p className="text-muted-foreground text-sm">Set up your match up in a few simple steps</p>
       </div>
 
       {/* Progress */}
@@ -146,12 +146,12 @@ export function CreateTournamentPage() {
           {steps.map((s, index) => (
             <div key={s.number} className="flex items-center flex-1">
               <div className="flex flex-col items-center flex-1">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all font-medium text-sm ${
+                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 transition-all font-medium text-xs sm:text-sm ${
                   s.number < step ? "bg-forest-green border-forest-green text-white"
                     : s.number === step ? "border-forest-green text-forest-green bg-white"
                     : "border-border text-muted-foreground bg-white"
                 }`}>
-                  {s.number < step ? <Check className="w-5 h-5" /> : s.number}
+                  {s.number < step ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> : s.number}
                 </div>
                 <div className="mt-2 text-center hidden sm:block">
                   <div className="text-xs font-medium text-foreground">{s.title}</div>
@@ -178,7 +178,7 @@ export function CreateTournamentPage() {
         {step === 1 && (
           <div className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="t-name">Tournament Name <span className="text-destructive">*</span></Label>
+              <Label htmlFor="t-name">Match Up Name <span className="text-destructive">*</span></Label>
               <Input id="t-name" placeholder="e.g., Summer Championship 2026" value={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -201,7 +201,7 @@ export function CreateTournamentPage() {
             </div>
             <div className="flex items-center gap-3">
               <input type="checkbox" id="is-public" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} className="rounded" />
-              <Label htmlFor="is-public">Public tournament (shareable link)</Label>
+              <Label htmlFor="is-public">Public match up (shareable link)</Label>
             </div>
           </div>
         )}
@@ -209,7 +209,7 @@ export function CreateTournamentPage() {
         {step === 2 && (
           <div className="space-y-5">
             <div className="space-y-2">
-              <Label>Tournament Format</Label>
+              <Label>Match Up Format</Label>
               <div className="grid sm:grid-cols-2 gap-3">
                 {formats.map((f) => (
                   <button
@@ -295,7 +295,7 @@ export function CreateTournamentPage() {
               Add Player
             </Button>
             {validPlayerCount < 4 && (
-              <p className="text-sm text-muted-foreground text-center">Need at least 4 players for a tournament</p>
+              <p className="text-sm text-muted-foreground text-center">Need at least 4 players for a match up</p>
             )}
           </div>
         )}
@@ -342,7 +342,7 @@ export function CreateTournamentPage() {
 
             {validPlayerCount >= 4 && (
               <div className="p-4 rounded-lg bg-soft-lime/10 border border-tennis-ball-green/30 space-y-1.5">
-                <div className="text-sm font-semibold text-foreground mb-2">Tournament Overview</div>
+                <div className="text-sm font-semibold text-foreground mb-2">Match Up Overview</div>
                 <div className="text-sm text-muted-foreground">• {validPlayerCount} players across {courts} courts</div>
                 <div className="text-sm text-muted-foreground">• ~{roundsNeeded} rounds, {matchesNeeded} total matches</div>
                 <div className="text-sm text-muted-foreground">• Estimated duration: {hrs > 0 ? `${hrs}h ` : ""}{mins}min</div>
@@ -372,7 +372,7 @@ export function CreateTournamentPage() {
             {createMutation.isPending ? (
               "Creating…"
             ) : (
-              <><Check className="w-4 h-4 mr-2" />Create Tournament</>
+              <><Check className="w-4 h-4 mr-2" />Create Match Up</>
             )}
           </Button>
         )}

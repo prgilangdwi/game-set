@@ -74,7 +74,7 @@ export function TournamentDetailPage() {
     mutationFn: () => tournamentsApi.start(id!),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["tournament", id] });
-      toast.success("Tournament started!");
+      toast.success("Match Up started!");
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -125,7 +125,7 @@ export function TournamentDetailPage() {
       </div>
     );
   }
-  if (!tournament) return <div className="p-8">Tournament not found</div>;
+  if (!tournament) return <div className="p-8">Match Up not found</div>;
 
   const liveMatches = matches.filter((m: Match) => m.status === "live");
   const scheduledMatches = matches.filter((m: Match) => m.status === "scheduled");
@@ -144,7 +144,7 @@ export function TournamentDetailPage() {
       <div className="mb-6">
         <Button variant="ghost" onClick={() => navigate("/tournaments")} className="-ml-2 mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" />
-          All Tournaments
+          All Match Ups
         </Button>
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
           <div>
@@ -176,7 +176,7 @@ export function TournamentDetailPage() {
             {tournament.status === "draft" && (
               <Button className="bg-forest-green text-white hover:bg-forest-green-light" size="sm" onClick={() => startMutation.mutate()} disabled={startMutation.isPending || players.length < 4}>
                 <Play className="w-4 h-4" />
-                {startMutation.isPending ? "Starting…" : "Start Tournament"}
+                {startMutation.isPending ? "Starting…" : "Start Match Up"}
               </Button>
             )}
             {tournament.status === "active" && (
@@ -233,7 +233,7 @@ export function TournamentDetailPage() {
                 <Card className="border border-border bg-white p-8 text-center">
                   <Clock className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
                   <p className="text-muted-foreground text-sm">
-                    {tournament.status === "draft" ? "Start the tournament to generate matches" : "All matches completed"}
+                    {tournament.status === "draft" ? "Start the match up to generate matches" : "All matches completed"}
                   </p>
                 </Card>
               )}
@@ -242,7 +242,7 @@ export function TournamentDetailPage() {
             {/* Sidebar */}
             <div className="space-y-4">
               <Card className="border border-border bg-white p-4">
-                <h3 className="text-sm font-semibold text-foreground mb-3">Tournament Info</h3>
+                <h3 className="text-sm font-semibold text-foreground mb-3">Match Up Info</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between"><span className="text-muted-foreground">Format</span><span className="font-medium">{formatTournamentFormat(tournament.format)}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Courts</span><span className="font-medium">{tournament.courts}</span></div>
