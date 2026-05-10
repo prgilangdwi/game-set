@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: Home },
-  { to: "/tournaments", label: "Tournaments", icon: Trophy },
+  { to: "/tournaments", label: "Match Ups", icon: Trophy },
   { to: "/leaderboard", label: "Leaderboard", icon: BarChart3 },
   { to: "/players", label: "Players", icon: Users },
   { to: "/community", label: "Community", icon: UsersRound },
@@ -55,7 +55,7 @@ export function Navigation() {
           <Trophy className="w-6 h-6 text-forest-green" />
           <span className="text-xl font-semibold text-foreground">GameSet</span>
         </div>
-        <p className="text-xs text-muted-foreground mt-0.5 ml-8">Tournament Platform</p>
+        <p className="text-xs text-muted-foreground mt-0.5 ml-8">Match Up Platform</p>
       </div>
 
       <nav className="flex flex-col gap-1 flex-1">

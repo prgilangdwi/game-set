@@ -23,12 +23,12 @@ export function LeaderboardPage() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-semibold text-foreground">Leaderboard</h1>
-          <p className="text-muted-foreground text-sm mt-1">Tournament rankings and player statistics</p>
+          <p className="text-muted-foreground text-sm mt-1">Match Up rankings and player statistics</p>
         </div>
         {tournaments.length > 0 && (
           <Select value={tournamentId} onValueChange={setSelectedId}>
             <SelectTrigger className="w-64">
-              <SelectValue placeholder="Select tournament" />
+              <SelectValue placeholder="Select match up" />
             </SelectTrigger>
             <SelectContent>
               {tournaments.map((t) => (
@@ -45,7 +45,7 @@ export function LeaderboardPage() {
         <div className="flex flex-col items-center justify-center py-24">
           <BarChart3 className="w-16 h-16 text-muted-foreground/20 mb-4" />
           <p className="text-muted-foreground text-sm">
-            {tournamentId ? "No standings yet — play some matches first" : "Select a tournament to view standings"}
+            {tournamentId ? "No standings yet — play some matches first" : "Select a match up to view standings"}
           </p>
         </div>
       ) : (
