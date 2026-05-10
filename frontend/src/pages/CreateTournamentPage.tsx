@@ -234,6 +234,10 @@ export function CreateTournamentPage() {
                 <SelectContent>
                   <SelectItem value="best-of-1">Best of 1 Set</SelectItem>
                   <SelectItem value="best-of-3">Best of 3 Sets</SelectItem>
+                  <SelectItem value="best-of-4">Best of 4 Sets</SelectItem>
+                  <SelectItem value="best-of-5">Best of 5 Sets</SelectItem>
+                  <SelectItem value="race-to-4">First to 4 Sets</SelectItem>
+                  <SelectItem value="race-to-5">First to 5 Sets</SelectItem>
                   <SelectItem value="timed-15">15 Minute Timed</SelectItem>
                   <SelectItem value="timed-20">20 Minute Timed</SelectItem>
                   <SelectItem value="timed-30">30 Minute Timed</SelectItem>
