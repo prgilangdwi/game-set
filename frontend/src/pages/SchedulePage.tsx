@@ -89,7 +89,7 @@ export function SchedulePage() {
               <div className="flex items-center gap-3 mb-4">
                 <h2 className="text-xl font-semibold text-foreground">Round {round.round_number}</h2>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                  round.status === "active" ? "bg-tennis-ball-green text-forest-green" :
+                  round.status === "active" ? "bg-lime-green text-forest-green" :
                   round.status === "completed" ? "bg-muted text-muted-foreground" :
                   "bg-warm-gray text-muted-foreground border border-border"
                 }`}>{round.status}</span>

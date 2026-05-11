@@ -29,10 +29,10 @@ async def get_public_matches(slug_or_id: str, supabase: SupabaseDep):
     tournament = _get_public_tournament(supabase, slug_or_id)
     res = supabase.table("matches").select(
         "*, "
-        "team1_player1:players!team1_player1_id(id,first_name,last_name,display_name,gender,skill_level), "
-        "team1_player2:players!team1_player2_id(id,first_name,last_name,display_name,gender,skill_level), "
-        "team2_player1:players!team2_player1_id(id,first_name,last_name,display_name,gender,skill_level), "
-        "team2_player2:players!team2_player2_id(id,first_name,last_name,display_name,gender,skill_level)"
+        "team1_player1:players!team1_player1_id(id,name,display_name,gender,skill_level), "
+        "team1_player2:players!team1_player2_id(id,name,display_name,gender,skill_level), "
+        "team2_player1:players!team2_player1_id(id,name,display_name,gender,skill_level), "
+        "team2_player2:players!team2_player2_id(id,name,display_name,gender,skill_level)"
     ).eq("tournament_id", tournament["id"]).order("created_at").execute()
     return res.data or []
 
@@ -41,6 +41,6 @@ async def get_public_matches(slug_or_id: str, supabase: SupabaseDep):
 async def get_public_standings(slug_or_id: str, supabase: SupabaseDep):
     tournament = _get_public_tournament(supabase, slug_or_id)
     res = supabase.table("standings").select(
-        "*, player:players(id,first_name,last_name,display_name,gender,skill_level)"
+        "*, player:players(id,name,display_name,gender,skill_level)"
     ).eq("tournament_id", tournament["id"]).order("rank").execute()
     return res.data or []

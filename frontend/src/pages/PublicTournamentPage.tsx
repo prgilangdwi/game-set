@@ -96,7 +96,7 @@ export function PublicTournamentPage() {
           <div className="flex items-center gap-3 mb-2 flex-wrap">
             <h1 className="text-3xl font-semibold text-foreground">{tournament.name}</h1>
             {tournament.status === "active" && (
-              <Badge className="bg-tennis-ball-green text-forest-green animate-pulse font-medium">Live</Badge>
+              <Badge className="bg-lime-green text-forest-green animate-pulse font-medium">Live</Badge>
             )}
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground mb-2">
@@ -109,8 +109,8 @@ export function PublicTournamentPage() {
 
         {/* Live banner */}
         {liveMatches.length > 0 && (
-          <Card className="border-tennis-ball-green/50 bg-soft-lime/10 p-4 mb-6 flex items-center gap-3">
-            <div className="w-3 h-3 rounded-full bg-tennis-ball-green animate-pulse" />
+          <Card className="border-lime-green/50 bg-soft-lime/10 p-4 mb-6 flex items-center gap-3">
+            <div className="w-3 h-3 rounded-full bg-lime-green animate-pulse" />
             <span className="text-forest-green font-medium">{liveMatches.length} match{liveMatches.length !== 1 ? "es" : ""} in progress</span>
           </Card>
         )}

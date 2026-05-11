@@ -75,13 +75,13 @@ export function AuthPage() {
           onClick={() => navigate("/")}
           className="relative z-10 flex items-center gap-2 hover:opacity-80 transition-opacity w-fit"
         >
-          <Trophy className="w-6 h-6 text-tennis-ball-green" />
+          <Trophy className="w-6 h-6 text-lime-green" />
           <span className="text-xl font-bold text-white tracking-tight">GameSet</span>
         </button>
         {/* Tagline */}
         <div className="relative z-10">
           <p className="text-3xl font-bold text-white leading-snug mb-3">
-            "The best way to run<br />your tennis tournament."
+            "The easiest way to organize<br />your next tournament."
           </p>
           <p className="text-white/60 text-sm">Americano · Round Robin · Mixed Doubles</p>
         </div>

@@ -24,14 +24,14 @@ export function PlayersPage() {
 
   const filtered = players.filter((p: Player) => {
     if (!search) return true;
-    const name = (p.display_name || `${p.first_name} ${p.last_name}`).toLowerCase();
+    const name = (p.display_name || p.name || "").toLowerCase();
     return name.includes(search.toLowerCase());
   });
 
   const skillColors: Record<string, string> = {
     beginner: "bg-muted text-muted-foreground",
     intermediate: "bg-soft-lime/20 text-forest-green",
-    advanced: "bg-tennis-ball-green/20 text-forest-green",
+    advanced: "bg-lime-green/20 text-forest-green",
     pro: "bg-forest-green text-white",
   };
 
@@ -74,17 +74,17 @@ export function PlayersPage() {
             <Card key={p.id} className="border border-border bg-white p-4 hover:shadow-md transition-shadow">
               <div className="flex items-start gap-3">
                 <div className="w-12 h-12 rounded-full bg-soft-lime/20 flex items-center justify-center text-forest-green font-semibold shrink-0">
-                  {p.first_name[0]}{p.last_name[0]}
+                  {(p.name || p.display_name || "?")[0].toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-foreground truncate">
-                    {p.display_name || `${p.first_name} ${p.last_name}`}
+                    {p.display_name || p.name || "—"}
                   </div>
                   {p.email && <div className="text-xs text-muted-foreground truncate mt-0.5">{p.email}</div>}
                   <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                     <Badge variant="outline" className="text-xs py-0">{p.gender === "male" ? "Male" : p.gender === "female" ? "Female" : "Other"}</Badge>
                     <Badge className={`text-xs py-0 ${skillColors[p.skill_level] || ""}`}>{skillLevelLabel(p.skill_level)}</Badge>
-                    {p.is_checked_in && <Badge className="text-xs py-0 bg-tennis-ball-green text-forest-green">Checked In</Badge>}
+                    {p.is_checked_in && <Badge className="text-xs py-0 bg-lime-green text-forest-green">Checked In</Badge>}
                   </div>
                 </div>
               </div>

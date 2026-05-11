@@ -76,7 +76,7 @@ export function DashboardPage() {
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-2xl font-semibold text-foreground">Live Matches</h2>
             <div className="flex items-center gap-2">
-              <Badge className="bg-tennis-ball-green text-forest-green animate-pulse font-medium">
+              <Badge className="bg-lime-green text-forest-green animate-pulse font-medium">
                 {liveCourts.length} Live
               </Badge>
               {firstActive && (

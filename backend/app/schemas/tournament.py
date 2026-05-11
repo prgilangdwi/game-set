@@ -7,10 +7,12 @@ TournamentFormat = Literal[
     "double_elimination", "mixed_doubles", "team_cup", "ladder"
 ]
 TournamentStatus = Literal["draft", "active", "completed", "cancelled"]
+SportType = Literal["tennis", "badminton", "padel", "pickleball"]
 
 
 class TournamentCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=200)
+    sport: SportType = "tennis"
     description: Optional[str] = None
     format: TournamentFormat = "americano"
     location: Optional[str] = None
@@ -26,6 +28,7 @@ class TournamentCreate(BaseModel):
 
 class TournamentUpdate(BaseModel):
     name: Optional[str] = None
+    sport: Optional[SportType] = None
     description: Optional[str] = None
     location: Optional[str] = None
     start_date: Optional[date] = None
@@ -42,6 +45,7 @@ class TournamentResponse(BaseModel):
     id: str
     organizer_id: str
     name: str
+    sport: str = "tennis"
     description: Optional[str] = None
     format: str
     location: Optional[str] = None

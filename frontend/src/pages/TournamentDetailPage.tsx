@@ -18,16 +18,14 @@ import {
 import { tournamentsApi, playersApi, scheduleApi, standingsApi } from "@/lib/api";
 import { formatDate, formatTournamentFormat, skillLevelLabel } from "@/lib/utils";
 import { toast } from "sonner";
-import type { Match, PlayerGender, SkillLevel } from "@/types";
+import type { Match, SkillLevel, SportType } from "@/types";
+import { getSport } from "@/lib/sports";
 
 interface PlayerInput {
-  first_name: string;
-  last_name: string;
-  email: string;
-  gender: PlayerGender;
+  name: string;
   skill_level: SkillLevel;
 }
-const emptyPlayer = (): PlayerInput => ({ first_name: "", last_name: "", email: "", gender: "male", skill_level: "intermediate" });
+const emptyPlayer = (): PlayerInput => ({ name: "", skill_level: "intermediate" });
 
 export function TournamentDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -101,7 +99,7 @@ export function TournamentDetailPage() {
 
   const addPlayersMutation = useMutation({
     mutationFn: (playerList: PlayerInput[]) =>
-      playersApi.add(id!, { players: playerList.filter((p) => p.first_name.trim() && p.last_name.trim()) }),
+      playersApi.add(id!, { players: playerList.filter((p) => p.name.trim()).map((p) => ({ name: p.name.trim(), skill_level: p.skill_level, gender: "other" as const })) }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["players", id] });
       toast.success("Players added!");
@@ -133,7 +131,7 @@ export function TournamentDetailPage() {
 
   const statusColors = {
     draft: "bg-muted text-muted-foreground",
-    active: "bg-tennis-ball-green text-forest-green animate-pulse",
+    active: "bg-lime-green text-forest-green animate-pulse",
     completed: "bg-muted text-muted-foreground",
     cancelled: "bg-destructive/10 text-destructive",
   };
@@ -149,6 +147,7 @@ export function TournamentDetailPage() {
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2 flex-wrap">
+              <span className="text-2xl">{getSport((tournament.sport ?? "tennis") as SportType).emoji}</span>
               <h1 className="text-3xl font-semibold text-foreground">{tournament.name}</h1>
               <Badge className={statusColors[tournament.status]}>{tournament.status}</Badge>
               <Badge variant="outline" className="text-xs">{formatTournamentFormat(tournament.format)}</Badge>
@@ -205,7 +204,7 @@ export function TournamentDetailPage() {
                 <div>
                   <h3 className="text-lg font-semibold mb-3 text-foreground flex items-center gap-2">
                     Live
-                    <Badge className="bg-tennis-ball-green text-forest-green animate-pulse text-xs">{liveMatches.length}</Badge>
+                    <Badge className="bg-lime-green text-forest-green animate-pulse text-xs">{liveMatches.length}</Badge>
                   </h3>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {liveMatches.map((m: Match) => (
@@ -313,14 +312,13 @@ export function TournamentDetailPage() {
                   <Card key={p.id} className="border border-border bg-white p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-soft-lime/20 flex items-center justify-center text-forest-green font-semibold text-sm shrink-0">
-                        {p.first_name[0]}{p.last_name[0]}
+                        {(p.name || p.display_name || "?")[0].toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-foreground truncate">{p.display_name || `${p.first_name} ${p.last_name}`}</div>
+                        <div className="font-medium text-foreground truncate">{p.display_name || p.name || "—"}</div>
                         <div className="flex items-center gap-1.5 mt-0.5">
-                          <Badge variant="outline" className="text-xs py-0">{p.gender === "male" ? "M" : p.gender === "female" ? "F" : "X"}</Badge>
                           <Badge variant="outline" className="text-xs py-0">{skillLevelLabel(p.skill_level)}</Badge>
-                          {p.is_checked_in && <Badge className="text-xs py-0 bg-tennis-ball-green text-forest-green">✓ In</Badge>}
+                          {p.is_checked_in && <Badge className="text-xs py-0 bg-lime-green text-forest-green">✓ In</Badge>}
                         </div>
                       </div>
                     </div>
@@ -342,29 +340,25 @@ export function TournamentDetailPage() {
           <DialogHeader>
             <DialogTitle>Add Players</DialogTitle>
           </DialogHeader>
-          <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
             {newPlayers.map((p, i) => (
-              <div key={i} className="grid grid-cols-[1fr_1fr_auto_auto_auto] gap-2 items-center">
-                <Input placeholder="First name" value={p.first_name} onChange={(e) => setNewPlayers((prev) => prev.map((x, idx) => idx === i ? { ...x, first_name: e.target.value } : x))} />
-                <Input placeholder="Last name" value={p.last_name} onChange={(e) => setNewPlayers((prev) => prev.map((x, idx) => idx === i ? { ...x, last_name: e.target.value } : x))} />
-                <Select value={p.gender} onValueChange={(v) => setNewPlayers((prev) => prev.map((x, idx) => idx === i ? { ...x, gender: v as PlayerGender } : x))}>
-                  <SelectTrigger className="w-20"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">M</SelectItem>
-                    <SelectItem value="female">F</SelectItem>
-                    <SelectItem value="other">X</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div key={i} className="flex gap-2 items-center">
+                <Input
+                  placeholder={`Player ${i + 1}`}
+                  value={p.name}
+                  onChange={(e) => setNewPlayers((prev) => prev.map((x, idx) => idx === i ? { ...x, name: e.target.value } : x))}
+                  className="flex-1 h-10"
+                />
                 <Select value={p.skill_level} onValueChange={(v) => setNewPlayers((prev) => prev.map((x, idx) => idx === i ? { ...x, skill_level: v as SkillLevel } : x))}>
-                  <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-28 h-10"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="beginner">Beginner</SelectItem>
-                    <SelectItem value="intermediate">Intermediate</SelectItem>
+                    <SelectItem value="intermediate">Mid</SelectItem>
                     <SelectItem value="advanced">Advanced</SelectItem>
                     <SelectItem value="pro">Pro</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="ghost" size="icon" onClick={() => setNewPlayers((prev) => prev.filter((_, idx) => idx !== i))} disabled={newPlayers.length <= 1}>
+                <Button variant="ghost" size="icon" onClick={() => setNewPlayers((prev) => prev.filter((_, idx) => idx !== i))} disabled={newPlayers.length <= 1} className="h-10 w-10">
                   <Trash2 className="w-4 h-4 text-muted-foreground" />
                 </Button>
               </div>
@@ -379,7 +373,7 @@ export function TournamentDetailPage() {
             <Button
               className="flex-1 bg-forest-green text-white hover:bg-forest-green-light"
               onClick={() => addPlayersMutation.mutate(newPlayers)}
-              disabled={addPlayersMutation.isPending || !newPlayers.some((p) => p.first_name.trim() && p.last_name.trim())}
+              disabled={addPlayersMutation.isPending || !newPlayers.some((p) => p.name.trim())}
             >
               {addPlayersMutation.isPending ? "Adding…" : "Add Players"}
             </Button>

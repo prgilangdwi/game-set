@@ -16,7 +16,7 @@ interface CourtCardProps {
 }
 
 const statusConfig = {
-  live: { color: "bg-tennis-ball-green text-forest-green", label: "Live", bar: "bg-tennis-ball-green" },
+  live: { color: "bg-lime-green text-forest-green", label: "Live", bar: "bg-lime-green" },
   scheduled: { color: "bg-warm-gray text-muted-foreground border border-border", label: "Upcoming", bar: "bg-muted" },
   completed: { color: "bg-muted text-muted-foreground", label: "Done", bar: "bg-muted" },
   walkover: { color: "bg-muted text-muted-foreground", label: "W/O", bar: "bg-muted" },
@@ -24,7 +24,7 @@ const statusConfig = {
 
 function playerName(p?: Player) {
   if (!p) return "TBD";
-  return p.display_name || `${p.first_name} ${p.last_name}`;
+  return p.display_name || p.name || "—";
 }
 
 export function CourtCard({ match, onStartMatch, onUpdateScore, onCompleteMatch, editable }: CourtCardProps) {
@@ -59,7 +59,7 @@ export function CourtCard({ match, onStartMatch, onUpdateScore, onCompleteMatch,
         {/* Team 1 */}
         <div className={cn(
           "flex items-center justify-between p-3.5 rounded-lg border mb-2",
-          isLive ? "bg-soft-lime/20 border-tennis-ball-green/40" : "bg-warm-gray border-border/50"
+          isLive ? "bg-soft-lime/20 border-lime-green/40" : "bg-warm-gray border-border/50"
         )}>
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
             <Users className="w-4 h-4 text-forest-green/70 shrink-0" />

@@ -6,6 +6,7 @@ import { Trophy, MapPin, Users, Calendar, ChevronRight, Globe, Lock } from "luci
 import type { Tournament } from "@/types";
 import { formatDate, formatTournamentFormat } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { getSport } from "@/lib/sports";
 
 interface TournamentCardProps {
   tournament: Tournament;
@@ -13,7 +14,7 @@ interface TournamentCardProps {
 
 const statusConfig = {
   draft: { color: "bg-muted text-muted-foreground", label: "Draft" },
-  active: { color: "bg-tennis-ball-green text-forest-green", label: "Active" },
+  active: { color: "bg-lime-green text-forest-green", label: "Active" },
   completed: { color: "bg-muted text-muted-foreground", label: "Completed" },
   cancelled: { color: "bg-destructive/10 text-destructive", label: "Cancelled" },
 };
@@ -21,6 +22,7 @@ const statusConfig = {
 export function TournamentCard({ tournament }: TournamentCardProps) {
   const navigate = useNavigate();
   const cfg = statusConfig[tournament.status];
+  const sport = getSport(tournament.sport ?? "tennis");
 
   return (
     <Card
@@ -30,14 +32,14 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
       <div className="p-5">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-start gap-3 flex-1 min-w-0">
-            <div className="p-2 rounded-lg bg-soft-lime/20 shrink-0">
-              <Trophy className="w-5 h-5 text-forest-green" />
+            <div className="p-2 rounded-lg bg-soft-lime/20 shrink-0 text-xl leading-none flex items-center justify-center w-9 h-9">
+              {sport.emoji}
             </div>
             <div className="min-w-0">
               <h3 className="font-semibold text-foreground truncate group-hover:text-forest-green transition-colors">
                 {tournament.name}
               </h3>
-              <p className="text-xs text-muted-foreground mt-0.5">{formatTournamentFormat(tournament.format)}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{sport.label} · {formatTournamentFormat(tournament.format)}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">

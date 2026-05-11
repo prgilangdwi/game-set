@@ -9,7 +9,7 @@ interface StandingsTableProps {
 }
 
 function playerName(s: Standing) {
-  if (s.player) return s.player.display_name || `${s.player.first_name} ${s.player.last_name}`;
+  if (s.player) return s.player.display_name || s.player.name || "—";
   return `Player #${s.player_id.slice(0, 6)}`;
 }
 
@@ -57,7 +57,7 @@ export function StandingsTable({ standings, limit }: StandingsTableProps) {
                 <TableCell className="text-center text-clay-orange font-medium tabular-nums">{s.losses}</TableCell>
                 <TableCell className="text-right font-semibold text-foreground tabular-nums">{s.points}</TableCell>
                 <TableCell>
-                  {trend === "up" && <TrendingUp className="w-4 h-4 text-tennis-ball-green" />}
+                  {trend === "up" && <TrendingUp className="w-4 h-4 text-lime-green" />}
                   {trend === "down" && <TrendingDown className="w-4 h-4 text-clay-orange" />}
                   {trend === "same" && <Minus className="w-4 h-4 text-muted-foreground/40" />}
                 </TableCell>

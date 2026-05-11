@@ -1,22 +1,18 @@
-import { useState } from "react";
 import { NavLink, useNavigate, Link } from "react-router-dom";
 import {
-  Home, Trophy, Calendar, BarChart3, Users, Settings,
-  Menu, X, LogOut, ChevronRight, UsersRound,
+  Home, Trophy, BarChart3, Users, Settings, LogOut, Plus, UsersRound,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { to: "/dashboard", label: "Dashboard", icon: Home },
-  { to: "/tournaments", label: "Match Ups", icon: Trophy },
+  { to: "/dashboard",   label: "Home",        icon: Home },
+  { to: "/tournaments", label: "Match Ups",   icon: Trophy },
   { to: "/leaderboard", label: "Leaderboard", icon: BarChart3 },
-  { to: "/players", label: "Players", icon: Users },
-  { to: "/community", label: "Community", icon: UsersRound },
+  { to: "/community",   label: "Community",   icon: UsersRound },
 ];
 
-function NavItem({ to, label, icon: Icon, onClick }: {
+function SidebarNavItem({ to, label, icon: Icon, onClick }: {
   to: string; label: string; icon: typeof Home; onClick?: () => void;
 }) {
   return (
@@ -38,8 +34,7 @@ function NavItem({ to, label, icon: Icon, onClick }: {
   );
 }
 
-export function Navigation() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+function DesktopSidebar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -48,24 +43,25 @@ export function Navigation() {
     navigate("/");
   }
 
-  const SidebarContent = ({ onItemClick }: { onItemClick?: () => void }) => (
-    <div className="flex flex-col h-full">
+  return (
+    <aside className="hidden lg:flex flex-col w-60 border-r border-border bg-white p-5 h-screen sticky top-0 shrink-0">
       <div className="mb-6 px-1">
         <div className="flex items-center gap-2">
           <Trophy className="w-6 h-6 text-forest-green" />
           <span className="text-xl font-semibold text-foreground">GameSet</span>
         </div>
-        <p className="text-xs text-muted-foreground mt-0.5 ml-8">Match Up Platform</p>
+        <p className="text-xs text-muted-foreground mt-0.5 ml-8">Racquet Sports Platform</p>
       </div>
 
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map((item) => (
-          <NavItem key={item.to} {...item} onClick={onItemClick} />
+          <SidebarNavItem key={item.to} {...item} />
         ))}
+        <SidebarNavItem to="/players" label="Players" icon={Users} />
       </nav>
 
       <div className="border-t border-border pt-4 space-y-1">
-        <NavItem to="/settings" label="Settings" icon={Settings} onClick={onItemClick} />
+        <SidebarNavItem to="/settings" label="Settings" icon={Settings} />
         <button
           onClick={handleSignOut}
           className="flex items-center gap-3 px-3 py-2.5 rounded-md transition-all w-full text-sm font-medium text-muted-foreground hover:bg-warm-gray hover:text-foreground"
@@ -85,41 +81,99 @@ export function Navigation() {
           </div>
         </Link>
       )}
-    </div>
+    </aside>
   );
+}
+
+function MobileHeader() {
+  return (
+    <header className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-border bg-white sticky top-0 z-40">
+      <div className="flex items-center gap-2">
+        <Trophy className="w-5 h-5 text-forest-green" />
+        <span className="text-lg font-semibold text-foreground">GameSet</span>
+      </div>
+    </header>
+  );
+}
+
+function MobileBottomNav() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const bottomItems = [
+    { to: "/dashboard",   label: "Home",     icon: Home },
+    { to: "/tournaments", label: "Matches",  icon: Trophy },
+    { to: "/leaderboard", label: "Standings", icon: BarChart3 },
+    { to: `/profile/${user?.id ?? "me"}`, label: "Profile", icon: Users },
+  ];
 
   return (
+    <nav
+      className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-border"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
+      <div className="flex items-center justify-around h-14 px-2">
+        {/* Left two items */}
+        {bottomItems.slice(0, 2).map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={({ isActive }) =>
+              cn(
+                "flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors min-w-[52px]",
+                isActive ? "text-forest-green" : "text-muted-foreground"
+              )
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <item.icon className={cn("w-5 h-5", isActive && "stroke-[2.5]")} />
+                <span className="text-[10px] font-medium">{item.label}</span>
+              </>
+            )}
+          </NavLink>
+        ))}
+
+        {/* FAB — center */}
+        <button
+          onClick={() => navigate("/tournaments/new")}
+          className="flex items-center justify-center w-14 h-14 -mt-5 rounded-full bg-forest-green text-white shadow-lg shadow-forest-green/30 active:scale-95 transition-transform"
+          aria-label="Create match up"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+
+        {/* Right two items */}
+        {bottomItems.slice(2).map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={({ isActive }) =>
+              cn(
+                "flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors min-w-[52px]",
+                isActive ? "text-forest-green" : "text-muted-foreground"
+              )
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <item.icon className={cn("w-5 h-5", isActive && "stroke-[2.5]")} />
+                <span className="text-[10px] font-medium">{item.label}</span>
+              </>
+            )}
+          </NavLink>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+export function Navigation() {
+  return (
     <>
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col w-60 border-r border-border bg-white p-5 h-screen sticky top-0 shrink-0">
-        <SidebarContent />
-      </aside>
-
-      {/* Mobile header */}
-      <header className="lg:hidden flex items-center justify-between p-4 border-b border-border bg-white sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <Trophy className="w-5 h-5 text-forest-green" />
-          <span className="text-lg font-semibold text-foreground">GameSet</span>
-        </div>
-        <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)}>
-          <Menu className="w-5 h-5" />
-        </Button>
-      </header>
-
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
-          <div className="absolute left-0 top-0 h-full w-64 bg-white p-5 shadow-xl">
-            <div className="flex justify-end mb-4">
-              <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)}>
-                <X className="w-5 h-5" />
-              </Button>
-            </div>
-            <SidebarContent onItemClick={() => setMobileOpen(false)} />
-          </div>
-        </div>
-      )}
+      <DesktopSidebar />
+      <MobileHeader />
+      <MobileBottomNav />
     </>
   );
 }
