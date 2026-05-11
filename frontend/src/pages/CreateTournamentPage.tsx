@@ -285,41 +285,46 @@ export function CreateTournamentPage() {
               </Badge>
             </div>
 
-            <div className="space-y-2 max-h-80 overflow-y-auto -mx-1 px-1">
+            <div className="space-y-3 max-h-[28rem] overflow-y-auto -mx-1 px-1">
               {players.map((p, i) => (
-                <div key={i} className="flex gap-2 items-center">
+                <div key={i} className="rounded-xl border border-border bg-muted/30 p-3 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                      Player {i + 1}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removePlayer(i)}
+                      disabled={players.length <= 1}
+                      className="h-8 w-8 -mr-1 text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                   <Input
-                    placeholder={`Player ${i + 1}`}
+                    placeholder={`Player ${i + 1} name`}
                     value={p.name}
                     onChange={(e) => updatePlayer(i, "name", e.target.value)}
-                    className="flex-1 text-base h-11"
+                    className="w-full text-base h-12"
                   />
                   <Select value={p.skill_level} onValueChange={(v) => updatePlayer(i, "skill_level", v)}>
-                    <SelectTrigger className="w-28 shrink-0 h-11">
+                    <SelectTrigger className="w-full h-12 text-base">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="beginner">Beginner</SelectItem>
-                      <SelectItem value="intermediate">Mid</SelectItem>
+                      <SelectItem value="intermediate">Intermediate</SelectItem>
                       <SelectItem value="advanced">Advanced</SelectItem>
                       <SelectItem value="pro">Pro</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removePlayer(i)}
-                    disabled={players.length <= 1}
-                    className="shrink-0 h-11 w-11"
-                  >
-                    <Trash2 className="w-4 h-4 text-muted-foreground" />
-                  </Button>
                 </div>
               ))}
             </div>
 
-            <Button variant="outline" className="w-full h-11" onClick={addPlayer}>
-              <Plus className="w-4 h-4 mr-2" />
+            <Button variant="outline" className="w-full h-12 text-base" onClick={addPlayer}>
+              <Plus className="w-5 h-5 mr-2" />
               Add Player
             </Button>
           </div>
