@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import App from "./App";
 import "./index.css";
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")!).render(
         <AuthProvider>
           <App />
           <Analytics />
+          <SpeedInsights />
           <Toaster richColors position="top-right" />
         </AuthProvider>
       </BrowserRouter>
