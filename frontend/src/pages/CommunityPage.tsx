@@ -95,7 +95,7 @@ export function CommunityPage() {
     <div className="p-5 lg:p-8 bg-warm-gray/30 min-h-screen">
       <div className="mb-6">
         <h1 className="text-3xl font-semibold text-foreground">Community</h1>
-        <p className="text-muted-foreground text-sm mt-1">Find players and connect with the tennis community</p>
+        <p className="text-muted-foreground text-sm mt-1">Find players and connect with the sports community</p>
       </div>
 
       {/* Filters */}

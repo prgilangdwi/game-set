@@ -3,30 +3,27 @@ import { Button } from "@/components/ui/button";
 import { Trophy, Users, Calendar, BarChart3, Zap, ChevronRight } from "lucide-react";
 
 const features = [
-  { icon: Trophy, title: "Americano Format", description: "Auto-schedule rotating partners every round for a true Americano experience." },
-  { icon: Users, title: "Mixed Doubles", description: "Smart team mixing so everyone plays with and against different people." },
-  { icon: Calendar, title: "Round Robin", description: "Full draws generated instantly — just add players and go." },
-  { icon: BarChart3, title: "Live Standings", description: "Leaderboards update the moment a score is entered." },
-  { icon: Zap, title: "Score in Seconds", description: "Enter match results from any device, changes propagate instantly." },
+  { icon: Trophy,    title: "Americano Format",  description: "Auto-schedule rotating partners every round for a true Americano experience." },
+  { icon: Users,     title: "Mixed Doubles",     description: "Smart team mixing so everyone plays with and against different people." },
+  { icon: Calendar,  title: "Round Robin",       description: "Full draws generated instantly — just add players and go." },
+  { icon: BarChart3, title: "Live Standings",    description: "Leaderboards update the moment a score is entered." },
+  { icon: Zap,       title: "Score in Seconds",  description: "Enter match results from any device, changes propagate instantly." },
 ];
 
-// Explicit hover color for tennis-ball-green buttons — avoids the default
-// variant's hover:bg-primary/90 turning the button forest-green (same as text)
-const btnYellow = "bg-tennis-ball-green text-forest-green font-bold hover:bg-[#b8cc30]";
+const btnYellow = "bg-lime-green text-forest-green font-bold hover:bg-[#b8cc30]";
 
 export function LandingPage() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Floating nav over hero */}
+      {/* Floating nav */}
       <header className="absolute top-0 left-0 right-0 z-20 px-6 py-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Trophy className="w-5 h-5 text-tennis-ball-green" />
+          <Trophy className="w-5 h-5 text-lime-green" />
           <span className="text-xl font-bold text-white tracking-tight">GameSet</span>
         </div>
         <div className="flex items-center gap-2">
-          {/* Ghost: no background conflict, text stays white through all states */}
           <Button
             variant="ghost"
             className="text-white hover:text-white hover:bg-white/15"
@@ -43,12 +40,12 @@ export function LandingPage() {
         </div>
       </header>
 
-      {/* Hero — full screen with tennis court photo */}
+      {/* Hero */}
       <section className="relative h-screen min-h-[600px] flex items-center justify-center">
         <div className="absolute inset-0 overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1920&q=80"
-            alt="Tennis court aerial view"
+            alt="Racquet sports court aerial view"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-forest-green/75 via-forest-green/60 to-black/80" />
@@ -56,15 +53,15 @@ export function LandingPage() {
 
         <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm mb-8">
-            <span className="w-2 h-2 rounded-full bg-tennis-ball-green" />
-            Tennis Tournament Platform
+            <span className="w-2 h-2 rounded-full bg-lime-green" />
+            🎾 🏸 🟡 Racquet Sports Platform
           </div>
           <h1 className="text-5xl lg:text-7xl font-bold text-white mb-5 leading-tight tracking-tight">
             Game, Set,{" "}
-            <span className="text-tennis-ball-green">Match.</span>
+            <span className="text-lime-green">Match.</span>
           </h1>
           <p className="text-xl text-white/75 mb-10 leading-relaxed">
-            Organize Americano and round-robin tournaments, track live scores, and manage your tennis events — all in one place.
+            The easiest way to organize and play racquet sports with friends — Tennis, Badminton, Padel &amp; Pickleball.
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Button
@@ -74,7 +71,6 @@ export function LandingPage() {
             >
               Create a Tournament
             </Button>
-            {/* bg-transparent overrides outline variant's bg-white so text stays visible */}
             <Button
               size="lg"
               variant="outline"
@@ -86,7 +82,6 @@ export function LandingPage() {
           </div>
         </div>
 
-        {/* Scroll hint */}
         <div className="absolute bottom-8 left-0 right-0 flex justify-center">
           <div className="w-5 h-8 rounded-full border-2 border-white/30 flex justify-center pt-1.5">
             <div className="w-1 h-2 bg-white/50 rounded-full animate-bounce" />
@@ -98,7 +93,7 @@ export function LandingPage() {
       <section className="py-20 bg-warm-gray/40">
         <div className="container mx-auto px-6">
           <div className="text-center mb-14">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-3">Built for Tennis</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-3">Built for Racquet Sports</h2>
             <p className="text-muted-foreground text-lg">Everything you need to run a great tournament</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
@@ -109,7 +104,7 @@ export function LandingPage() {
                   key={f.title}
                   className="bg-white rounded-xl border border-border p-6 hover:shadow-md transition-shadow group"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-forest-green/10 flex items-center justify-center mb-4 group-hover:bg-tennis-ball-green/20 transition-colors">
+                  <div className="w-10 h-10 rounded-lg bg-forest-green/10 flex items-center justify-center mb-4 group-hover:bg-lime-green/20 transition-colors">
                     <Icon className="w-5 h-5 text-forest-green" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">{f.title}</h3>
@@ -121,12 +116,12 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Action photo + CTA */}
+      {/* CTA */}
       <section className="relative py-28 overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=1920&q=80"
-            alt="Tennis match in action"
+            alt="Players in action"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-forest-green/85" />
@@ -148,7 +143,7 @@ export function LandingPage() {
 
       <footer className="bg-white border-t border-border py-8">
         <div className="container mx-auto px-6 text-center text-sm text-muted-foreground">
-          © 2026 GameSet · Tennis Tournament Platform
+          © 2026 GameSet · Racquet Sports Platform
         </div>
       </footer>
     </div>

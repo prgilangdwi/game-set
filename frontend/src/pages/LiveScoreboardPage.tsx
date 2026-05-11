@@ -13,9 +13,9 @@ import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-function playerName(p?: { display_name?: string; first_name?: string; last_name?: string }) {
+function playerName(p?: { display_name?: string; name?: string }) {
   if (!p) return "TBD";
-  return p.display_name || `${p.first_name || ""} ${p.last_name || ""}`.trim();
+  return p.display_name || p.name || "—";
 }
 
 function ScoreCard({ match, onSave }: { match: Match; onSave: (matchId: string, t1: number, t2: number) => void }) {
@@ -30,8 +30,8 @@ function ScoreCard({ match, onSave }: { match: Match; onSave: (matchId: string, 
   }, [match.team1_score, match.team2_score]);
 
   return (
-    <Card className={cn("border overflow-hidden", isLive ? "border-tennis-ball-green/50" : "border-border bg-white")}>
-      <div className={cn("h-1", isLive ? "bg-tennis-ball-green" : "bg-muted")} />
+    <Card className={cn("border overflow-hidden", isLive ? "border-lime-green/50" : "border-border bg-white")}>
+      <div className={cn("h-1", isLive ? "bg-lime-green" : "bg-muted")} />
       <div className="p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -39,7 +39,7 @@ function ScoreCard({ match, onSave }: { match: Match; onSave: (matchId: string, 
             <span className="text-sm font-medium text-muted-foreground">Court {match.court_number}</span>
           </div>
           <Badge className={cn(
-            isLive ? "bg-tennis-ball-green text-forest-green animate-pulse" : "bg-muted text-muted-foreground",
+            isLive ? "bg-lime-green text-forest-green animate-pulse" : "bg-muted text-muted-foreground",
             "font-medium text-xs"
           )}>
             {isLive ? "LIVE" : isDone ? "Done" : "Scheduled"}
@@ -47,7 +47,7 @@ function ScoreCard({ match, onSave }: { match: Match; onSave: (matchId: string, 
         </div>
 
         {/* Team 1 */}
-        <div className={cn("flex items-center justify-between p-3.5 rounded-lg border mb-2", isLive ? "bg-soft-lime/20 border-tennis-ball-green/30" : "bg-warm-gray border-border/50")}>
+        <div className={cn("flex items-center justify-between p-3.5 rounded-lg border mb-2", isLive ? "bg-soft-lime/20 border-lime-green/30" : "bg-warm-gray border-border/50")}>
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <Users className="w-4 h-4 text-forest-green/70 shrink-0" />
             <div className="min-w-0">
@@ -150,7 +150,7 @@ export function LiveScoreboardPage() {
         <div className="flex items-center gap-3">
           <h1 className="text-3xl font-semibold text-foreground">Live Scoreboard</h1>
           {liveMatches.length > 0 && (
-            <Badge className="bg-tennis-ball-green text-forest-green animate-pulse font-medium">
+            <Badge className="bg-lime-green text-forest-green animate-pulse font-medium">
               {liveMatches.length} Live
             </Badge>
           )}

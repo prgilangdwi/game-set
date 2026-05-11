@@ -19,7 +19,7 @@ export function StatCard({ title, value, icon: Icon, trend, subtitle }: StatCard
             <p className="text-3xl font-semibold tracking-tight text-foreground">{value}</p>
             {subtitle && <p className="text-xs text-muted-foreground mt-2">{subtitle}</p>}
             {trend && (
-              <p className={`text-xs font-medium mt-2 ${trend.positive ? "text-tennis-ball-green" : "text-clay-orange"}`}>
+              <p className={`text-xs font-medium mt-2 ${trend.positive ? "text-lime-green" : "text-clay-orange"}`}>
                 {trend.positive ? "↑" : "↓"} {trend.value}
               </p>
             )}

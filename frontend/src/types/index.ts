@@ -1,3 +1,4 @@
+export type SportType = "tennis" | "badminton" | "padel" | "pickleball";
 export type PreferredHand = "right" | "left" | "ambidextrous";
 export type FavoriteSurface = "hard" | "clay" | "grass" | "indoor";
 
@@ -52,6 +53,7 @@ export interface Tournament {
   id: string;
   organizer_id: string;
   name: string;
+  sport: SportType;
   description?: string;
   format: TournamentFormat;
   location?: string;
@@ -73,8 +75,7 @@ export interface Player {
   id: string;
   tournament_id: string;
   user_id?: string;
-  first_name: string;
-  last_name: string;
+  name: string;
   display_name: string;
   email?: string;
   gender: PlayerGender;
@@ -143,6 +144,7 @@ export interface MatchWithPlayers extends Match {
 
 export interface CreateTournamentPayload {
   name: string;
+  sport: SportType;
   description?: string;
   format: TournamentFormat;
   location?: string;
@@ -158,8 +160,7 @@ export interface CreateTournamentPayload {
 
 export interface AddPlayersPayload {
   players: {
-    first_name: string;
-    last_name: string;
+    name: string;
     email?: string;
     gender: PlayerGender;
     skill_level: SkillLevel;

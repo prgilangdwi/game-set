@@ -1,13 +1,12 @@
 from typing import Literal, Optional
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field
 
 PlayerGender = Literal["male", "female", "other"]
 SkillLevel = Literal["beginner", "intermediate", "advanced", "pro"]
 
 
 class PlayerInput(BaseModel):
-    first_name: str = Field(..., min_length=1)
-    last_name: str = Field(..., min_length=1)
+    name: str = Field(..., min_length=1)
     email: Optional[str] = None
     gender: PlayerGender = "male"
     skill_level: SkillLevel = "intermediate"
@@ -18,8 +17,7 @@ class AddPlayersRequest(BaseModel):
 
 
 class PlayerUpdate(BaseModel):
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
+    name: Optional[str] = None
     email: Optional[str] = None
     gender: Optional[PlayerGender] = None
     skill_level: Optional[SkillLevel] = None
@@ -30,8 +28,7 @@ class PlayerResponse(BaseModel):
     id: str
     tournament_id: str
     user_id: Optional[str] = None
-    first_name: str
-    last_name: str
+    name: str
     display_name: str
     email: Optional[str] = None
     gender: str
