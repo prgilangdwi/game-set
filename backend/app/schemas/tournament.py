@@ -22,6 +22,7 @@ class TournamentCreate(BaseModel):
     match_duration: int = Field(default=20, gt=0)
     break_duration: int = Field(default=5, ge=0)
     scoring_system: str = Field(default="points")
+    match_type: Optional[str] = None
     is_public: bool = True
     max_players: Optional[int] = None
 
@@ -37,6 +38,7 @@ class TournamentUpdate(BaseModel):
     match_duration: Optional[int] = Field(default=None, gt=0)
     break_duration: Optional[int] = Field(default=None, ge=0)
     scoring_system: Optional[str] = None
+    match_type: Optional[str] = None
     is_public: Optional[bool] = None
     status: Optional[TournamentStatus] = None
 
@@ -55,6 +57,7 @@ class TournamentResponse(BaseModel):
     match_duration: int
     break_duration: int
     scoring_system: str
+    match_type: Optional[str] = None
     status: str
     is_public: bool
     slug: Optional[str] = None

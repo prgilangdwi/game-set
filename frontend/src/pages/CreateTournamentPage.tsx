@@ -13,7 +13,7 @@ import {
   ChevronDown, ChevronUp,
 } from "lucide-react";
 import { tournamentsApi, playersApi } from "@/lib/api";
-import { SPORTS } from "@/lib/sports";
+import { SPORTS, MATCH_TYPES } from "@/lib/sports";
 import { toast } from "sonner";
 import type { TournamentFormat, SkillLevel, SportType, CreateTournamentPayload } from "@/types";
 
@@ -61,6 +61,7 @@ export function CreateTournamentPage() {
   // Advanced
   const [format, setFormat] = useState<TournamentFormat>("americano");
   const [scoringSystem, setScoringSystem] = useState("points");
+  const [matchType, setMatchType] = useState<string>("");
   const [courts, setCourts] = useState("2");
   const [matchDuration, setMatchDuration] = useState("20");
   const [breakDuration, setBreakDuration] = useState("5");
@@ -85,6 +86,7 @@ export function CreateTournamentPage() {
         match_duration: parseInt(matchDuration),
         break_duration: parseInt(breakDuration),
         scoring_system: scoringSystem,
+        match_type: matchType || undefined,
         is_public: isPublic,
       };
       const tournament = await tournamentsApi.create(payload);
@@ -192,7 +194,7 @@ export function CreateTournamentPage() {
               {SPORTS.map((s) => (
                 <button
                   key={s.id}
-                  onClick={() => setSport(s.id)}
+                  onClick={() => { setSport(s.id); setMatchType(""); }}
                   className={`p-4 rounded-xl border-2 text-left transition-all active:scale-95 ${
                     sport === s.id
                       ? "border-forest-green bg-forest-green/5"
@@ -430,6 +432,22 @@ export function CreateTournamentPage() {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label>Match Type</Label>
+                  <Select
+                    value={matchType || "__none__"}
+                    onValueChange={(v) => setMatchType(v === "__none__" ? "" : v)}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select match type…" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__none__">— None —</SelectItem>
+                      {MATCH_TYPES[sport].map((mt) => (
+                        <SelectItem key={mt.value} value={mt.value}>{mt.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             )}
