@@ -12,7 +12,12 @@ import type {
   ProfileUpdatePayload,
 } from "@/types";
 
-const API_BASE = import.meta.env.VITE_API_URL || "/api/v1";
+// In dev, always use a relative path so requests flow through the Vite proxy
+// (vite.config.ts proxies /api → http://localhost:8000). In production,
+// VITE_API_URL must point to the deployed backend.
+const API_BASE: string = import.meta.env.DEV
+  ? "/api/v1"
+  : (import.meta.env.VITE_API_URL || "/api/v1");
 
 async function authHeaders(): Promise<Record<string, string>> {
   const { data } = await supabase.auth.getSession();
@@ -31,8 +36,8 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     },
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(err.detail || "Request failed");
+    const err = await res.json().catch(() => ({ detail: null }));
+    throw new Error(err?.detail ?? `${res.status} ${res.statusText} — check the backend is running`);
   }
   return res.json();
 }
@@ -102,8 +107,8 @@ export const standingsApi = {
 async function publicRequest<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`);
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(err.detail || "Request failed");
+    const err = await res.json().catch(() => ({ detail: null }));
+    throw new Error(err?.detail ?? `${res.status} ${res.statusText}`);
   }
   return res.json();
 }
