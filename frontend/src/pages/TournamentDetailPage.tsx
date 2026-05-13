@@ -13,12 +13,12 @@ import { StandingsTable } from "@/components/features/StandingsTable";
 import { CourtCard } from "@/components/features/CourtCard";
 import {
   ArrowLeft, Trophy, MapPin, Calendar, Users, Play, Share2,
-  Zap, BarChart3, Clock, Plus, Trash2,
+  Zap, BarChart3, Clock, Plus, Trash2, Pencil, Check, X, ArrowLeftRight,
 } from "lucide-react";
 import { tournamentsApi, playersApi, scheduleApi, standingsApi } from "@/lib/api";
 import { formatDate, formatTournamentFormat, skillLevelLabel } from "@/lib/utils";
 import { toast } from "sonner";
-import type { Match, SkillLevel, SportType } from "@/types";
+import type { Match, Player, SkillLevel, SportType } from "@/types";
 import { getSport } from "@/lib/sports";
 
 interface PlayerInput {
@@ -27,12 +27,30 @@ interface PlayerInput {
 }
 const emptyPlayer = (): PlayerInput => ({ name: "", skill_level: "intermediate" });
 
+const SKILL_LEVELS: { value: SkillLevel; label: string }[] = [
+  { value: "beginner", label: "Beginner" },
+  { value: "intermediate", label: "Mid" },
+  { value: "advanced", label: "Advanced" },
+  { value: "pro", label: "Pro" },
+];
+
 export function TournamentDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const qc = useQueryClient();
+
   const [showAddPlayers, setShowAddPlayers] = useState(false);
   const [newPlayers, setNewPlayers] = useState<PlayerInput[]>([emptyPlayer()]);
+
+  // Player editing state
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editSkill, setEditSkill] = useState<SkillLevel>("intermediate");
+
+  // Swap dialog state
+  const [showSwap, setShowSwap] = useState(false);
+  const [swapA, setSwapA] = useState("");
+  const [swapB, setSwapB] = useState("");
 
   const { data: tournament, isLoading } = useQuery({
     queryKey: ["tournament", id],
@@ -108,6 +126,54 @@ export function TournamentDetailPage() {
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const updatePlayerMutation = useMutation({
+    mutationFn: ({ playerId, name, skill_level }: { playerId: string; name: string; skill_level: SkillLevel }) =>
+      playersApi.update(id!, playerId, { name, skill_level }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["players", id] });
+      toast.success("Player updated!");
+      setEditingId(null);
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const removePlayerMutation = useMutation({
+    mutationFn: (playerId: string) => playersApi.remove(id!, playerId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["players", id] });
+      toast.success("Player removed");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const swapPlayersMutation = useMutation({
+    mutationFn: async () => {
+      const a = players.find((p) => p.id === swapA);
+      const b = players.find((p) => p.id === swapB);
+      if (!a || !b) throw new Error("Select two different players");
+      await playersApi.update(id!, a.id, { name: b.name, skill_level: b.skill_level });
+      await playersApi.update(id!, b.id, { name: a.name, skill_level: a.skill_level });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["players", id] });
+      toast.success("Players swapped!");
+      setShowSwap(false);
+      setSwapA("");
+      setSwapB("");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  function startEdit(p: Player) {
+    setEditingId(p.id);
+    setEditName(p.name || p.display_name || "");
+    setEditSkill(p.skill_level as SkillLevel);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+  }
 
   function copyShareLink() {
     const url = `${window.location.origin}/t/${tournament?.slug || id}`;
@@ -198,7 +264,6 @@ export function TournamentDetailPage() {
 
         <TabsContent value="overview">
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Live matches */}
             <div className="lg:col-span-2 space-y-4">
               {liveMatches.length > 0 && (
                 <div>
@@ -238,7 +303,6 @@ export function TournamentDetailPage() {
               )}
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-4">
               <Card className="border border-border bg-white p-4">
                 <h3 className="text-sm font-semibold text-foreground mb-3">Match Up Info</h3>
@@ -246,6 +310,9 @@ export function TournamentDetailPage() {
                   <div className="flex justify-between"><span className="text-muted-foreground">Format</span><span className="font-medium">{formatTournamentFormat(tournament.format)}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Courts</span><span className="font-medium">{tournament.courts}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Duration</span><span className="font-medium">{tournament.match_duration}min</span></div>
+                  {tournament.match_type && (
+                    <div className="flex justify-between"><span className="text-muted-foreground">Match Type</span><span className="font-medium">{tournament.match_type.replace(/_/g, " ")}</span></div>
+                  )}
                   <div className="flex justify-between"><span className="text-muted-foreground">Players</span><span className="font-medium">{players.length}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Matches</span><span className="font-medium">{matches.length}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Completed</span><span className="font-medium">{completedMatches.length}</span></div>
@@ -293,15 +360,22 @@ export function TournamentDetailPage() {
 
         <TabsContent value="players">
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <h3 className="text-lg font-semibold text-foreground">{players.length} Players</h3>
-              {tournament.status === "draft" && (
+              <div className="flex gap-2">
+                {players.length >= 2 && (
+                  <Button variant="outline" size="sm" onClick={() => { setSwapA(""); setSwapB(""); setShowSwap(true); }}>
+                    <ArrowLeftRight className="w-4 h-4" />
+                    Swap
+                  </Button>
+                )}
                 <Button size="sm" className="bg-forest-green text-white hover:bg-forest-green-light" onClick={() => setShowAddPlayers(true)}>
                   <Plus className="w-4 h-4" />
                   Add Players
                 </Button>
-              )}
+              </div>
             </div>
+
             {players.length === 0 ? (
               <Card className="border border-border bg-white p-8 text-center">
                 <p className="text-muted-foreground text-sm">No players added yet</p>
@@ -310,18 +384,65 @@ export function TournamentDetailPage() {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {players.map((p) => (
                   <Card key={p.id} className="border border-border bg-white p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-soft-lime/20 flex items-center justify-center text-forest-green font-semibold text-sm shrink-0">
-                        {(p.name || p.display_name || "?")[0].toUpperCase()}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-foreground truncate">{p.display_name || p.name || "—"}</div>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          <Badge variant="outline" className="text-xs py-0">{skillLevelLabel(p.skill_level)}</Badge>
-                          {p.is_checked_in && <Badge className="text-xs py-0 bg-lime-green text-forest-green">✓ In</Badge>}
+                    {editingId === p.id ? (
+                      <div className="space-y-2">
+                        <Input
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                          className="h-9 text-sm"
+                          autoFocus
+                        />
+                        <Select value={editSkill} onValueChange={(v) => setEditSkill(v as SkillLevel)}>
+                          <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {SKILL_LEVELS.map((s) => (
+                              <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <div className="flex gap-1.5">
+                          <Button
+                            size="sm"
+                            className="flex-1 h-8 bg-forest-green text-white hover:bg-forest-green-light text-xs"
+                            disabled={updatePlayerMutation.isPending || !editName.trim()}
+                            onClick={() => updatePlayerMutation.mutate({ playerId: p.id, name: editName.trim(), skill_level: editSkill })}
+                          >
+                            <Check className="w-3 h-3 mr-1" />
+                            Save
+                          </Button>
+                          <Button size="sm" variant="outline" className="h-8 text-xs" onClick={cancelEdit}>
+                            <X className="w-3 h-3" />
+                          </Button>
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-soft-lime/20 flex items-center justify-center text-forest-green font-semibold text-sm shrink-0">
+                          {(p.name || p.display_name || "?")[0].toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-foreground truncate">{p.display_name || p.name || "—"}</div>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <Badge variant="outline" className="text-xs py-0">{skillLevelLabel(p.skill_level)}</Badge>
+                            {p.is_checked_in && <Badge className="text-xs py-0 bg-lime-green text-forest-green">✓ In</Badge>}
+                          </div>
+                        </div>
+                        <div className="flex gap-1 shrink-0">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => startEdit(p)}>
+                            <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            disabled={removePlayerMutation.isPending}
+                            onClick={() => removePlayerMutation.mutate(p.id)}
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-destructive/70" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </Card>
                 ))}
               </div>
@@ -352,10 +473,9 @@ export function TournamentDetailPage() {
                 <Select value={p.skill_level} onValueChange={(v) => setNewPlayers((prev) => prev.map((x, idx) => idx === i ? { ...x, skill_level: v as SkillLevel } : x))}>
                   <SelectTrigger className="w-28 h-10"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="beginner">Beginner</SelectItem>
-                    <SelectItem value="intermediate">Mid</SelectItem>
-                    <SelectItem value="advanced">Advanced</SelectItem>
-                    <SelectItem value="pro">Pro</SelectItem>
+                    {SKILL_LEVELS.map((s) => (
+                      <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <Button variant="ghost" size="icon" onClick={() => setNewPlayers((prev) => prev.filter((_, idx) => idx !== i))} disabled={newPlayers.length <= 1} className="h-10 w-10">
@@ -376,6 +496,53 @@ export function TournamentDetailPage() {
               disabled={addPlayersMutation.isPending || !newPlayers.some((p) => p.name.trim())}
             >
               {addPlayersMutation.isPending ? "Adding…" : "Add Players"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Swap Players Dialog */}
+      <Dialog open={showSwap} onOpenChange={(open) => { setShowSwap(open); if (!open) { setSwapA(""); setSwapB(""); } }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Swap Players</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">Select two players — their names and skill levels will be exchanged.</p>
+          <div className="space-y-3 pt-1">
+            <div className="space-y-1.5">
+              <Label>Player A</Label>
+              <Select value={swapA} onValueChange={setSwapA}>
+                <SelectTrigger><SelectValue placeholder="Select player…" /></SelectTrigger>
+                <SelectContent>
+                  {players.filter((p) => p.id !== swapB).map((p) => (
+                    <SelectItem key={p.id} value={p.id}>{p.name || p.display_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center justify-center">
+              <ArrowLeftRight className="w-4 h-4 text-muted-foreground" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Player B</Label>
+              <Select value={swapB} onValueChange={setSwapB}>
+                <SelectTrigger><SelectValue placeholder="Select player…" /></SelectTrigger>
+                <SelectContent>
+                  {players.filter((p) => p.id !== swapA).map((p) => (
+                    <SelectItem key={p.id} value={p.id}>{p.name || p.display_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex gap-2 pt-2">
+            <Button variant="outline" className="flex-1" onClick={() => setShowSwap(false)}>Cancel</Button>
+            <Button
+              className="flex-1 bg-forest-green text-white hover:bg-forest-green-light"
+              disabled={!swapA || !swapB || swapA === swapB || swapPlayersMutation.isPending}
+              onClick={() => swapPlayersMutation.mutate()}
+            >
+              {swapPlayersMutation.isPending ? "Swapping…" : "Swap"}
             </Button>
           </div>
         </DialogContent>

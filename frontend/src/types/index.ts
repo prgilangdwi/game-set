@@ -63,6 +63,7 @@ export interface Tournament {
   match_duration: number;
   break_duration: number;
   scoring_system: string;
+  match_type?: string;
   status: TournamentStatus;
   is_public: boolean;
   slug?: string;
@@ -154,6 +155,7 @@ export interface CreateTournamentPayload {
   match_duration: number;
   break_duration: number;
   scoring_system: string;
+  match_type?: string;
   is_public: boolean;
   max_players?: number;
 }
