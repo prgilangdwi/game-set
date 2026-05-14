@@ -24,13 +24,43 @@ const steps = [
   { number: 4, label: "Create" },
 ];
 
-const formats: { id: TournamentFormat; name: string; desc: string }[] = [
-  { id: "americano",          name: "Americano",          desc: "Rotating partners & opponents" },
-  { id: "mexicano",           name: "Mexicano",           desc: "Like Americano with skill matching" },
-  { id: "round_robin",        name: "Round Robin",        desc: "Everyone plays everyone" },
-  { id: "mixed_doubles",      name: "Mixed Doubles",      desc: "Fixed mixed pairs" },
-  { id: "single_elimination", name: "Single Elimination", desc: "Bracket-style knockout" },
-  { id: "team_cup",           name: "Team Cup",           desc: "Team-based competition" },
+const formats: { id: TournamentFormat; name: string; desc: string; detail: string }[] = [
+  {
+    id: "americano",
+    name: "Americano",
+    desc: "Rotating partners & opponents",
+    detail: "Every round, partners and opponents rotate so everyone plays with everyone. Final ranking is by total points scored — great for social events where you want to mix all levels.",
+  },
+  {
+    id: "mexicano",
+    name: "Mexicano",
+    desc: "Like Americano with skill matching",
+    detail: "Starts like Americano, but after each round players are re-seeded by score so similar skill levels are matched together. Gets more competitive as the event progresses.",
+  },
+  {
+    id: "round_robin",
+    name: "Round Robin",
+    desc: "Everyone plays everyone",
+    detail: "Every team or player faces every other team/player once. The most wins (or points) decides the champion. Fair and complete, but takes more time with large groups.",
+  },
+  {
+    id: "mixed_doubles",
+    name: "Mixed Doubles",
+    desc: "Fixed mixed pairs",
+    detail: "Teams are fixed as one male + one female player. Perfect for club social nights. Partners stay the same the whole event — bring a partner or get paired randomly.",
+  },
+  {
+    id: "single_elimination",
+    name: "Single Elimination",
+    desc: "Bracket-style knockout",
+    detail: "One loss and you're out. Matches are seeded into a bracket and the winner advances. The fastest format to crown a champion — great for competitive events.",
+  },
+  {
+    id: "team_cup",
+    name: "Team Cup",
+    desc: "Team-based competition",
+    detail: "Players are divided into fixed teams that compete for overall team score. Individual matches contribute to team totals. Ideal for club vs club or inter-group rivalries.",
+  },
 ];
 
 interface PlayerDraft {
@@ -371,18 +401,27 @@ export function CreateTournamentPage() {
                   <Label>Format</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {formats.map((f) => (
-                      <button
-                        key={f.id}
-                        onClick={() => setFormat(f.id)}
-                        className={`p-3 rounded-lg border-2 text-left transition-all ${
-                          format === f.id
-                            ? "border-forest-green bg-forest-green/5"
-                            : "border-border hover:border-forest-green/40"
-                        }`}
-                      >
-                        <div className="font-medium text-xs text-foreground">{f.name}</div>
-                        <div className="text-[11px] text-muted-foreground mt-0.5">{f.desc}</div>
-                      </button>
+                      <div key={f.id} className="relative group">
+                        <button
+                          onClick={() => setFormat(f.id)}
+                          className={`w-full p-3 rounded-lg border-2 text-left transition-all ${
+                            format === f.id
+                              ? "border-forest-green bg-forest-green/5"
+                              : "border-border hover:border-forest-green/40"
+                          }`}
+                        >
+                          <div className="font-medium text-xs text-foreground">{f.name}</div>
+                          <div className="text-[11px] text-muted-foreground mt-0.5">{f.desc}</div>
+                        </button>
+                        {/* Hover tooltip */}
+                        <div className="pointer-events-none absolute bottom-full left-0 mb-2 z-50 hidden group-hover:block w-56">
+                          <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg leading-relaxed">
+                            <p className="font-semibold mb-1">{f.name}</p>
+                            {f.detail}
+                          </div>
+                          <div className="w-2 h-2 bg-gray-900 rotate-45 ml-4 -mt-1" />
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -453,6 +492,14 @@ export function CreateTournamentPage() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {matchType && (() => {
+                    const desc = MATCH_TYPES[sport].find((mt) => mt.value === matchType)?.description;
+                    return desc ? (
+                      <p className="text-xs text-muted-foreground bg-warm-gray/60 rounded-lg px-3 py-2 leading-relaxed">
+                        {desc}
+                      </p>
+                    ) : null;
+                  })()}
                 </div>
               </div>
             )}

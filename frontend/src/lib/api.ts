@@ -119,12 +119,22 @@ async function publicRequest<T>(path: string): Promise<T> {
 }
 
 // Profiles
+export interface PlayerStats {
+  tournaments_played: number;
+  matches_played: number;
+  wins: number;
+  losses: number;
+  points: number;
+  win_rate: number;
+}
+
 export const profilesApi = {
   getMe: () => request<UserProfile>("/profiles/me"),
   updateMe: (data: ProfileUpdatePayload) =>
     request<UserProfile>("/profiles/me", { method: "PATCH", body: JSON.stringify(data) }),
   get: (userId: string) => request<UserProfile>(`/profiles/${userId}`),
   list: () => request<UserProfile[]>("/profiles"),
+  getStats: (userId: string) => request<PlayerStats>(`/profiles/${userId}/stats`),
 };
 
 export const publicApi = {

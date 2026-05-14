@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { profilesApi } from "@/lib/api";
+import type { PlayerStats } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   MapPin, Calendar, Hand, Trophy, ChevronLeft, Settings,
+  Swords, Star, TrendingUp, Target,
 } from "lucide-react";
 import type { UserProfile } from "@/types";
 
@@ -52,10 +54,12 @@ export function ProfilePage() {
   const [notFound, setNotFound] = useState(false);
 
   const isOwnProfile = user?.id === userId;
+  const [stats, setStats] = useState<PlayerStats | null>(null);
 
   useEffect(() => {
     if (!userId) return;
     profilesApi.get(userId).then(setProfile).catch(() => setNotFound(true)).finally(() => setLoading(false));
+    profilesApi.getStats(userId).then(setStats).catch(() => {});
   }, [userId]);
 
   if (loading) {
@@ -136,6 +140,61 @@ export function ProfilePage() {
           </p>
         )}
       </Card>
+
+      {/* Analytics card */}
+      {stats && (
+        <Card className="border border-border bg-white p-6 mb-4 shadow-sm">
+          <h2 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-forest-green" />
+            Player Analytics
+          </h2>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="text-center p-3 rounded-lg bg-warm-gray/60">
+              <div className="flex justify-center mb-1">
+                <Trophy className="w-4 h-4 text-forest-green" />
+              </div>
+              <p className="text-2xl font-bold text-foreground">{stats.tournaments_played}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Tournaments</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-warm-gray/60">
+              <div className="flex justify-center mb-1">
+                <Swords className="w-4 h-4 text-forest-green" />
+              </div>
+              <p className="text-2xl font-bold text-foreground">{stats.matches_played}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Matches</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-warm-gray/60">
+              <div className="flex justify-center mb-1">
+                <Target className="w-4 h-4 text-forest-green" />
+              </div>
+              <p className="text-2xl font-bold text-foreground">{stats.win_rate}%</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Win Rate</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-3 mt-3">
+            <div className="text-center p-3 rounded-lg bg-lime-green/10 border border-lime-green/20">
+              <p className="text-xl font-bold text-forest-green">{stats.wins}</p>
+              <p className="text-xs text-muted-foreground">Wins</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-warm-gray/60">
+              <p className="text-xl font-bold text-foreground">{stats.losses}</p>
+              <p className="text-xs text-muted-foreground">Losses</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-warm-gray/60">
+              <div className="flex items-center justify-center gap-1">
+                <Star className="w-3 h-3 text-amber-500" />
+                <p className="text-xl font-bold text-foreground">{stats.points}</p>
+              </div>
+              <p className="text-xs text-muted-foreground">Points</p>
+            </div>
+          </div>
+          {stats.matches_played === 0 && (
+            <p className="text-xs text-muted-foreground text-center mt-3">
+              No match data yet — join a tournament to start tracking stats.
+            </p>
+          )}
+        </Card>
+      )}
 
       {/* Details card */}
       {(profile.preferred_hand || profile.favorite_surface) && (
