@@ -98,6 +98,8 @@ export const scheduleApi = {
     request<Match>(`/tournaments/${tournamentId}/matches/${matchId}/start`, { method: "POST" }),
   completeMatch: (tournamentId: string, matchId: string) =>
     request<Match>(`/tournaments/${tournamentId}/matches/${matchId}/complete`, { method: "POST" }),
+  deleteMatch: (tournamentId: string, matchId: string) =>
+    request<void>(`/tournaments/${tournamentId}/matches/${matchId}`, { method: "DELETE" }),
 };
 
 // Standings

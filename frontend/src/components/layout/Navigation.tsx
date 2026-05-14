@@ -60,6 +60,19 @@ function DesktopSidebar() {
         <SidebarNavItem to="/players" label="Players" icon={Users} />
       </nav>
 
+      <a
+        href="https://saweria.co/kuribohcharm"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 px-3 py-2 mb-2 rounded-lg bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors"
+      >
+        <span className="text-base leading-none">☕</span>
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-amber-700">Support on Saweria</p>
+          <p className="text-[10px] text-amber-600/80 truncate">saweria.co/kuribohcharm</p>
+        </div>
+      </a>
+
       <div className="border-t border-border pt-4 space-y-1">
         <SidebarNavItem to="/settings" label="Settings" icon={Settings} />
         <button
@@ -92,6 +105,15 @@ function MobileHeader() {
         <Trophy className="w-5 h-5 text-forest-green" />
         <span className="text-lg font-semibold text-foreground">GameSet</span>
       </div>
+      <a
+        href="https://saweria.co/kuribohcharm"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors"
+      >
+        <span className="text-sm leading-none">☕</span>
+        <span className="text-xs font-semibold text-amber-700">Support</span>
+      </a>
     </header>
   );
 }

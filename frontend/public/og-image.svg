@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1a6b3c"/>
+  <rect x="0" y="0" width="1200" height="630" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a6b3c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f3d22;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Court lines decoration -->
+  <rect x="60" y="60" width="1080" height="510" rx="12" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="2"/>
+  <line x1="600" y1="60" x2="600" y2="570" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+  <ellipse cx="600" cy="315" rx="120" ry="120" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+
+  <!-- Logo mark -->
+  <rect x="160" y="190" width="90" height="90" rx="20" fill="#cddc39"/>
+  <text x="205" y="252" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="900" font-size="44" fill="#1a6b3c">GS</text>
+
+  <!-- Title -->
+  <text x="280" y="240" font-family="system-ui,sans-serif" font-weight="700" font-size="64" fill="#ffffff">GameSet</text>
+  <text x="280" y="285" font-family="system-ui,sans-serif" font-weight="400" font-size="26" fill="#cddc39">Tournament Management</text>
+
+  <!-- Tagline -->
+  <text x="160" y="380" font-family="system-ui,sans-serif" font-weight="400" font-size="28" fill="#ffffff" fill-opacity="0.80">
+    Run your racquet sports match ups effortlessly.
+  </text>
+  <text x="160" y="420" font-family="system-ui,sans-serif" font-weight="400" font-size="28" fill="#ffffff" fill-opacity="0.80">
+    Track scores, standings &amp; players — all in one place.
+  </text>
+
+  <!-- Pills -->
+  <rect x="160" y="470" width="110" height="36" rx="18" fill="#ffffff" fill-opacity="0.12"/>
+  <text x="215" y="494" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" fill="#ffffff">🎾 Tennis</text>
+
+  <rect x="285" y="470" width="130" height="36" rx="18" fill="#ffffff" fill-opacity="0.12"/>
+  <text x="350" y="494" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" fill="#ffffff">🏸 Badminton</text>
+
+  <rect x="430" y="470" width="110" height="36" rx="18" fill="#ffffff" fill-opacity="0.12"/>
+  <text x="485" y="494" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" fill="#ffffff">🏓 Ping Pong</text>
+</svg>

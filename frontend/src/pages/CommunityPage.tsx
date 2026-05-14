@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { profilesApi } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MapPin, Calendar, Search, Users } from "lucide-react";
+import { MapPin, Calendar, Search, Users, ChevronDown, ChevronUp } from "lucide-react";
 import type { UserProfile, SkillLevel } from "@/types";
 
 const SKILL_COLORS: Record<string, string> = {
@@ -14,6 +14,17 @@ const SKILL_COLORS: Record<string, string> = {
 };
 
 const SKILL_LEVELS: SkillLevel[] = ["beginner", "intermediate", "advanced", "pro"];
+
+const SKILL_ORDER: SkillLevel[] = ["pro", "advanced", "intermediate", "beginner"];
+
+const SKILL_LABELS: Record<SkillLevel, string> = {
+  pro: "Pro",
+  advanced: "Advanced",
+  intermediate: "Intermediate",
+  beginner: "Beginner",
+};
+
+const PAGE_SIZE = 12;
 
 function PlayerCard({ profile }: { profile: UserProfile }) {
   const initials = (profile.name || "?").split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
@@ -70,6 +81,45 @@ function PlayerCard({ profile }: { profile: UserProfile }) {
   );
 }
 
+function SkillGroup({ label, players, colorClass }: { label: string; players: UserProfile[]; colorClass: string }) {
+  const [expanded, setExpanded] = useState(true);
+  const [showAll, setShowAll] = useState(false);
+
+  const visible = expanded ? (showAll ? players : players.slice(0, PAGE_SIZE)) : [];
+  const hidden = players.length - PAGE_SIZE;
+
+  return (
+    <div className="mb-6">
+      <button
+        className="flex items-center gap-2 mb-3 group"
+        onClick={() => setExpanded((v) => !v)}
+      >
+        <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${colorClass}`}>{label}</span>
+        <span className="text-xs text-muted-foreground">{players.length} {players.length === 1 ? "player" : "players"}</span>
+        {expanded
+          ? <ChevronUp className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-muted-foreground transition-colors" />
+          : <ChevronDown className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-muted-foreground transition-colors" />}
+      </button>
+
+      {expanded && (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {visible.map((p) => <PlayerCard key={p.id} profile={p} />)}
+          </div>
+          {!showAll && hidden > 0 && (
+            <button
+              className="mt-3 text-xs text-forest-green hover:underline font-medium"
+              onClick={() => setShowAll(true)}
+            >
+              Show {hidden} more…
+            </button>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 export function CommunityPage() {
   const [profiles, setProfiles] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -90,6 +140,17 @@ export function CommunityPage() {
     const matchesSkill = !skillFilter || p.skill_level === skillFilter;
     return matchesSearch && matchesSkill;
   });
+
+  const isFiltering = !!(search || skillFilter);
+
+  const grouped = SKILL_ORDER.map((level) => ({
+    level,
+    label: SKILL_LABELS[level],
+    colorClass: SKILL_COLORS[level] || "bg-muted text-foreground",
+    players: filtered.filter((p) => p.skill_level === level),
+  })).filter((g) => g.players.length > 0);
+
+  const ungrouped = filtered.filter((p) => !p.skill_level);
 
   return (
     <div className="p-5 lg:p-8 bg-warm-gray/30 min-h-screen">
@@ -131,10 +192,10 @@ export function CommunityPage() {
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <Users className="w-10 h-10 text-muted-foreground/40 mb-3" />
           <p className="text-muted-foreground text-sm">
-            {search || skillFilter ? "No players match your filters." : "No players yet."}
+            {isFiltering ? "No players match your filters." : "No players yet."}
           </p>
         </div>
-      ) : (
+      ) : isFiltering ? (
         <>
           <p className="text-xs text-muted-foreground mb-4">
             {filtered.length} {filtered.length === 1 ? "player" : "players"}
@@ -142,6 +203,18 @@ export function CommunityPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map((p) => <PlayerCard key={p.id} profile={p} />)}
           </div>
+        </>
+      ) : (
+        <>
+          <p className="text-xs text-muted-foreground mb-5">
+            {filtered.length} {filtered.length === 1 ? "player" : "players"}
+          </p>
+          {grouped.map((g) => (
+            <SkillGroup key={g.level} label={g.label} players={g.players} colorClass={g.colorClass} />
+          ))}
+          {ungrouped.length > 0 && (
+            <SkillGroup label="Other" players={ungrouped} colorClass="bg-muted text-muted-foreground" />
+          )}
         </>
       )}
     </div>

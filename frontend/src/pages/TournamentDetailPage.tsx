@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { CourtCard } from "@/components/features/CourtCard";
 import {
   ArrowLeft, Trophy, MapPin, Calendar, Users, Play, Share2,
   Zap, BarChart3, Clock, Plus, Trash2, Pencil, Check, X, ArrowLeftRight,
+  Link2, MessageCircle,
 } from "lucide-react";
 import { tournamentsApi, playersApi, scheduleApi, standingsApi } from "@/lib/api";
 import { formatDate, formatTournamentFormat, skillLevelLabel } from "@/lib/utils";
@@ -41,6 +42,18 @@ export function TournamentDetailPage() {
 
   const [showAddPlayers, setShowAddPlayers] = useState(false);
   const [newPlayers, setNewPlayers] = useState<PlayerInput[]>([emptyPlayer()]);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const shareMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (shareMenuRef.current && !shareMenuRef.current.contains(e.target as Node)) {
+        setShowShareMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Player editing state
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -165,6 +178,15 @@ export function TournamentDetailPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const deleteMatchMutation = useMutation({
+    mutationFn: (matchId: string) => scheduleApi.deleteMatch(id!, matchId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["matches", id] });
+      toast.success("Match deleted");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   function startEdit(p: Player) {
     setEditingId(p.id);
     setEditName(p.name || p.display_name || "");
@@ -175,10 +197,21 @@ export function TournamentDetailPage() {
     setEditingId(null);
   }
 
+  function getShareUrl() {
+    return `${window.location.origin}/t/${tournament?.slug || id}`;
+  }
+
   function copyShareLink() {
-    const url = `${window.location.origin}/t/${tournament?.slug || id}`;
-    navigator.clipboard.writeText(url);
-    toast.success("Share link copied!");
+    navigator.clipboard.writeText(getShareUrl());
+    toast.success("Link copied!");
+    setShowShareMenu(false);
+  }
+
+  function shareWhatsApp() {
+    const url = getShareUrl();
+    const text = `Check out this match up on GameSet!\n*${tournament?.name}* 🎾\n${url}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    setShowShareMenu(false);
   }
 
   if (isLoading) {
@@ -227,10 +260,33 @@ export function TournamentDetailPage() {
           </div>
           <div className="flex flex-wrap gap-2">
             {tournament.is_public && (
-              <Button variant="outline" size="sm" onClick={copyShareLink}>
-                <Share2 className="w-4 h-4" />
-                Share
-              </Button>
+              <div className="relative" ref={shareMenuRef}>
+                <Button variant="outline" size="sm" onClick={() => setShowShareMenu((v) => !v)}>
+                  <Share2 className="w-4 h-4" />
+                  Share
+                </Button>
+                {showShareMenu && (
+                  <div className="absolute right-0 top-full mt-1 z-50 bg-white border border-border rounded-lg shadow-lg py-1 w-48">
+                    <button
+                      className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-foreground hover:bg-warm-gray transition-colors"
+                      onClick={copyShareLink}
+                    >
+                      <Link2 className="w-4 h-4 text-muted-foreground" />
+                      Copy link
+                    </button>
+                    <button
+                      className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-foreground hover:bg-warm-gray transition-colors"
+                      onClick={shareWhatsApp}
+                    >
+                      <MessageCircle className="w-4 h-4 text-green-500" />
+                      Share to WhatsApp
+                    </button>
+                    <div className="px-3 py-2 border-t border-border mt-1">
+                      <p className="text-xs text-muted-foreground">For Instagram: copy the link and paste it in your bio or story.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
             {tournament.status === "active" && (
               <Button variant="outline" size="sm" onClick={() => navigate(`/tournaments/${id}/scoreboard`)}>
@@ -351,6 +407,7 @@ export function TournamentDetailPage() {
                     onStartMatch={(matchId) => startMatchMutation.mutate(matchId)}
                     onUpdateScore={(matchId, t1, t2) => scoreMatchMutation.mutate({ matchId, t1, t2 })}
                     onCompleteMatch={(matchId) => completeMatchMutation.mutate(matchId)}
+                    onDeleteMatch={(matchId) => deleteMatchMutation.mutate(matchId)}
                   />
                 ))}
               </div>

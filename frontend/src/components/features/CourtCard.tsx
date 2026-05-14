@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Circle, Users, Play, CheckCircle, Save } from "lucide-react";
+import { Circle, Users, Play, CheckCircle, Save, Trash2 } from "lucide-react";
 import type { Match, Player } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +12,7 @@ interface CourtCardProps {
   onStartMatch?: (matchId: string) => void;
   onUpdateScore?: (matchId: string, t1: number, t2: number) => void;
   onCompleteMatch?: (matchId: string) => void;
+  onDeleteMatch?: (matchId: string) => void;
   editable?: boolean;
 }
 
@@ -27,12 +28,13 @@ function playerName(p?: Player) {
   return p.display_name || p.name || "—";
 }
 
-export function CourtCard({ match, onStartMatch, onUpdateScore, onCompleteMatch, editable }: CourtCardProps) {
+export function CourtCard({ match, onStartMatch, onUpdateScore, onCompleteMatch, onDeleteMatch, editable }: CourtCardProps) {
   const cfg = statusConfig[match.status] ?? statusConfig.scheduled;
   const isLive = match.status === "live";
 
   const [t1, setT1] = useState(match.team1_score);
   const [t2, setT2] = useState(match.team2_score);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   // Sync from server (e.g. realtime updates)
   useEffect(() => {
@@ -51,9 +53,27 @@ export function CourtCard({ match, onStartMatch, onUpdateScore, onCompleteMatch,
             <Circle className="w-3 h-3 text-forest-green fill-forest-green" />
             <span className="text-sm font-medium text-muted-foreground">Court {match.court_number}</span>
           </div>
-          <Badge className={cn(cfg.color, isLive ? "animate-pulse" : "", "font-medium text-xs")}>
-            {cfg.label}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge className={cn(cfg.color, isLive ? "animate-pulse" : "", "font-medium text-xs")}>
+              {cfg.label}
+            </Badge>
+            {editable && onDeleteMatch && !isLive && (
+              confirmDelete ? (
+                <div className="flex items-center gap-1">
+                  <Button size="icon" variant="destructive" className="h-6 w-6" onClick={() => { onDeleteMatch(match.id); setConfirmDelete(false); }}>
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
+                  <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setConfirmDelete(false)}>
+                    ✕
+                  </Button>
+                </div>
+              ) : (
+                <Button size="icon" variant="ghost" className="h-6 w-6 opacity-40 hover:opacity-100 hover:text-destructive" onClick={() => setConfirmDelete(true)}>
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              )
+            )}
+          </div>
         </div>
 
         {/* Team 1 */}

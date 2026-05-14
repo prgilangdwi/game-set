@@ -256,6 +256,12 @@ async def complete_match(tournament_id: str, match_id: str, supabase: SupabaseDe
     return res.data[0]
 
 
+@router.delete("/{tournament_id}/matches/{match_id}", status_code=204)
+async def delete_match(tournament_id: str, match_id: str, supabase: SupabaseDep, user: CurrentUser):
+    _get_tournament_or_403(supabase, tournament_id, user["id"])
+    supabase.table("matches").delete().eq("id", match_id).eq("tournament_id", tournament_id).execute()
+
+
 # ── Standings ─────────────────────────────────────────────────────────────────
 
 @router.get("/{tournament_id}/standings", response_model=list[StandingResponse])
