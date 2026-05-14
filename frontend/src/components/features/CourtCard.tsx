@@ -53,27 +53,9 @@ export function CourtCard({ match, onStartMatch, onUpdateScore, onCompleteMatch,
             <Circle className="w-3 h-3 text-forest-green fill-forest-green" />
             <span className="text-sm font-medium text-muted-foreground">Court {match.court_number}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge className={cn(cfg.color, isLive ? "animate-pulse" : "", "font-medium text-xs")}>
-              {cfg.label}
-            </Badge>
-            {editable && onDeleteMatch && !isLive && (
-              confirmDelete ? (
-                <div className="flex items-center gap-1">
-                  <Button size="icon" variant="destructive" className="h-6 w-6" onClick={() => { onDeleteMatch(match.id); setConfirmDelete(false); }}>
-                    <Trash2 className="w-3 h-3" />
-                  </Button>
-                  <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setConfirmDelete(false)}>
-                    ✕
-                  </Button>
-                </div>
-              ) : (
-                <Button size="icon" variant="ghost" className="h-6 w-6 opacity-40 hover:opacity-100 hover:text-destructive" onClick={() => setConfirmDelete(true)}>
-                  <Trash2 className="w-3 h-3" />
-                </Button>
-              )
-            )}
-          </div>
+          <Badge className={cn(cfg.color, isLive ? "animate-pulse" : "", "font-medium text-xs")}>
+            {cfg.label}
+          </Badge>
         </div>
 
         {/* Team 1 */}
@@ -150,6 +132,24 @@ export function CourtCard({ match, onStartMatch, onUpdateScore, onCompleteMatch,
                 <CheckCircle className="w-3.5 h-3.5" />
                 Finish
               </Button>
+            )}
+            {onDeleteMatch && !isLive && (
+              confirmDelete ? (
+                <>
+                  <Button size="sm" variant="destructive" className="flex-1" onClick={() => { onDeleteMatch(match.id); setConfirmDelete(false); }}>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Confirm Delete
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => setConfirmDelete(false)}>
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <Button size="sm" variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive" onClick={() => setConfirmDelete(true)}>
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Delete
+                </Button>
+              )
             )}
           </div>
         )}
