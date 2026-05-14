@@ -344,6 +344,7 @@ export function TournamentDetailPage() {
                     {scheduledMatches.slice(0, 4).map((m: Match) => (
                       <CourtCard key={m.id} match={m} editable
                         onStartMatch={(matchId) => startMatchMutation.mutate(matchId)}
+                        onDeleteMatch={(matchId) => deleteMatchMutation.mutate(matchId)}
                       />
                     ))}
                   </div>
