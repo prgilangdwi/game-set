@@ -14,10 +14,13 @@ import type {
 
 // In dev, always use a relative path so requests flow through the Vite proxy
 // (vite.config.ts proxies /api → http://localhost:8000). In production,
-// VITE_API_URL must point to the deployed backend.
-const API_BASE: string = import.meta.env.DEV
-  ? "/api/v1"
-  : (import.meta.env.VITE_API_URL || "/api/v1");
+// VITE_API_URL should be the backend host (with or without /api/v1 — both work).
+const API_BASE: string = (() => {
+  if (import.meta.env.DEV) return "/api/v1";
+  const raw = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
+  if (!raw) return "/api/v1";
+  return raw.replace(/\/api\/v1\/?$/, "").replace(/\/$/, "") + "/api/v1";
+})();
 
 async function authHeaders(): Promise<Record<string, string>> {
   const { data } = await supabase.auth.getSession();
