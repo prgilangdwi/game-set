@@ -101,9 +101,16 @@ export function TournamentDetailPage() {
 
   const startMutation = useMutation({
     mutationFn: () => tournamentsApi.start(id!),
-    onSuccess: () => {
+    onSuccess: async () => {
       qc.invalidateQueries({ queryKey: ["tournament", id] });
-      toast.success("Match Up started!");
+      toast.success("Match Up started! Generating first round…");
+      try {
+        await scheduleApi.generateRound(id!);
+        qc.invalidateQueries({ queryKey: ["matches", id] });
+        toast.success("Round 1 ready!");
+      } catch {
+        toast.error("Could not auto-generate round — click Next Round to try again.");
+      }
     },
     onError: (e: Error) => toast.error(e.message),
   });

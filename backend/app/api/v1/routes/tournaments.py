@@ -105,7 +105,7 @@ async def list_players(tournament_id: str, supabase: SupabaseDep, user: CurrentU
 @router.post("/{tournament_id}/players", response_model=list[PlayerResponse], status_code=201)
 async def add_players(tournament_id: str, body: AddPlayersRequest, supabase: SupabaseDep, user: CurrentUser):
     _get_tournament_or_403(supabase, tournament_id, user["id"])
-    rows = [{"tournament_id": tournament_id, **p.model_dump()} for p in body.players]
+    rows = [{"tournament_id": tournament_id, "is_checked_in": True, **p.model_dump()} for p in body.players]
     try:
         res = supabase.table("players").insert(rows).execute()
         if not res.data:
